@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: platform-agent-logs-reader
+  namespace: agentdev-system
+rules:
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get", "list"]
