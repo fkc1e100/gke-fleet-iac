@@ -4,6 +4,7 @@ metadata:
   name: kubeagents-system
   labels:
     pod-security.kubernetes.io/enforce: baseline
+    compliance-audit: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -11,6 +12,7 @@ metadata:
   name: cert-manager
   labels:
     pod-security.kubernetes.io/enforce: baseline
+    compliance-audit: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -26,6 +28,7 @@ metadata:
   name: agent-sandbox-system
   labels:
     pod-security.kubernetes.io/enforce: baseline
+    compliance-audit: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -33,3 +36,4 @@ metadata:
   name: forge-guards
   labels:
     pod-security.kubernetes.io/enforce: baseline
+    compliance-audit: enabled
