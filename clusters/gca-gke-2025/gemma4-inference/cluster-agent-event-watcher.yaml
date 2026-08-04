@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/name: k8s-event-watcher
     spec:
       serviceAccountName: kubeagents-event-watcher
+      tolerations:
+      - operator: Exists
       containers:
       - name: event-watcher
         image: ghcr.io/gke-labs/kube-agents/platform-agent:latest
@@ -29,7 +31,7 @@ spec:
         - /usr/local/bin/k8s-event-watcher
         args:
         - --cluster-name=gemma4-inference
-        - --daemon-url=http://platform-agent.kubeagents-system.svc.cluster.local:8699
+        - --dry-run
         - --dedup-window=24h
         resources:
           limits:
