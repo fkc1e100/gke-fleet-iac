@@ -31,8 +31,14 @@ spec:
         - /usr/local/bin/k8s-event-watcher
         args:
         - --cluster-name=gke-a2-ultra
-        - --dry-run
+        - --daemon-url=http://34.118.226.59:8642
+        - --token-env=API_SERVER_KEY
+        - --owner=platform
+        - --reason=Failed,FailedToDrainNode,CrashLoopBackOff,BackOff,ImagePullBackOff,ErrImagePull,OOMKilled
         - --dedup-window=24h
+        env:
+        - name: API_SERVER_KEY
+          value: cluster-internal-trusted
         resources:
           limits:
             cpu: 200m
