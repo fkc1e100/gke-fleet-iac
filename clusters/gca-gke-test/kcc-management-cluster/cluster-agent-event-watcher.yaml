@@ -31,7 +31,7 @@ spec:
         - /usr/local/bin/k8s-event-watcher
         args:
         - --cluster-name=kcc-management-cluster
-        - --daemon-url=http://34.118.226.59:8642
+        - --daemon-url=http://10.128.0.73:8642
         - --token-env=API_SERVER_KEY
         - --owner=platform
         - --reason=Failed,FailedToDrainNode,CrashLoopBackOff,BackOff,ImagePullBackOff,ErrImagePull,OOMKilled
