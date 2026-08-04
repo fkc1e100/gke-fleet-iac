@@ -1,0 +1,23 @@
+name: Daily Fleet 0200h Reset Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Every day at 0200 UTC
+  workflow_dispatch:
+
+jobs:
+  reset-failing-fleet:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+        service_account: 'gke-fleet-iac-runner@gca-gke-2025.iam.gserviceaccount.com'
+
+    - name: Execute Daily Reset Script
+      run: |
+        ./scripts/enforce_broken_state.sh

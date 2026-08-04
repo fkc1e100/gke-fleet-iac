@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-01-payment-service
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: wl-01
+    test.kube-agents.io/failure-type: CrashLoopBackOff
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+      - name: app
+        image: bash:latest
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "FATAL: Mandatory environment variable DATABASE_URL is missing!"
+            exit 1
+          fi
+          echo "Starting payment service..."

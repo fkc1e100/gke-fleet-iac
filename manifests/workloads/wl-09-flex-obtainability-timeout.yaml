@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wl-09-flex-dws-training-job
+  namespace: default
+  annotations:
+    dws.gke.io/wait-timeout: "5s"
+  labels:
+    test.kube-agents.io/workload: wl-09
+    test.kube-agents.io/failure-type: FlexStartObtainabilityTimeout
+spec:
+  template:
+    metadata:
+      labels:
+        app: flex-dws-job
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        cloud.google.com/gke-flex: "true"
+      containers:
+      - name: trainer
+        image: gcr.io/kaggle-gpu-images/python:latest
+        command: ["python3", "-c", "print('Flex DWS Training Job')"]
