@@ -31,14 +31,14 @@ spec:
         - /usr/local/bin/k8s-event-watcher
         args:
         - --cluster-name=cluster-01
-        - --daemon-url=http://10.128.0.73:8642
+        - --daemon-url=http://136.107.255.238:8642
         - --token-env=API_SERVER_KEY
         - --owner=platform
-        - --reason=Failed,FailedToDrainNode,CrashLoopBackOff,BackOff,ImagePullBackOff,ErrImagePull,OOMKilled,ScaleUpFailed
+        - --reason=Failed,FailedToDrainNode,CrashLoopBackOff,BackOff,ImagePullBackOff,ErrImagePull,OOMKilled,ScaleUpFailed,FailedScheduling
         - --dedup-window=24h
         env:
         - name: API_SERVER_KEY
-          value: cluster-internal-trusted
+          value: d16fb182b167b57724a18ee2125d34cd
         resources:
           limits:
             cpu: 200m

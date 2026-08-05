@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-01-ip-eater
+  namespace: default
+spec:
+  replicas: 40
+  selector:
+    matchLabels:
+      app: ip-eater
+  template:
+    metadata:
+      labels:
+        app: ip-eater
+    spec:
+      containers:
+      - name: pause
+        image: registry.k8s.io/pause:3.9
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "16Mi"

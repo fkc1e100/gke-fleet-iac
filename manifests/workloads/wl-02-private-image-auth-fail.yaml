@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-02-private-registry-app
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: private-registry-app
+  template:
+    metadata:
+      labels:
+        app: private-registry-app
+    spec:
+      containers:
+      - name: app
+        image: gcr.io/gca-gke-2025/private-secure-app:v1.0.0
