@@ -31,11 +31,11 @@ echo "============================================================"
 # -------------------------------------------------------------------
 declare -A CLUSTER_DIRS=(
   ["cluster-01"]="${GCP_PROJECT_2025}:us-central1-a:prod-core-api-01"
-  ["cluster-02"]="${GCP_PROJECT_2025}:us-central1-b:prod-user-auth-02"
+  ["cluster-02"]="${GCP_PROJECT_2025}:us-central1-a:prod-user-auth-02"
   ["cluster-03"]="${GCP_PROJECT_2025}:us-east1-b:prod-data-pipeline-03"
   ["cluster-04"]="${GCP_PROJECT_2025}:us-east4-a:prod-checkout-04"
   ["cluster-05"]="${GCP_PROJECT_2025}:us-west1-a:prod-storage-db-05"
-  ["cluster-06"]="${GCP_PROJECT_TEST}:us-central1-c:edge-ingress-gateway-06"
+  ["cluster-06"]="${GCP_PROJECT_TEST}:us-central1-a:edge-ingress-gateway-06"
   ["cluster-07"]="${GCP_PROJECT_TEST}:us-east1-c:prod-api-router-07"
   ["cluster-08"]="${GCP_PROJECT_2025}:us-west2-a:batch-analytics-08"
   ["cluster-09"]="${GCP_PROJECT_2025}:europe-west1-b:ai-training-dws-09"
