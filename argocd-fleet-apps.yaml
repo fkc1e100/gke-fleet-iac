@@ -1,0 +1,68 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gke-fleet-workloads
+  namespace: argocd
+  annotations:
+    description: "ArgoCD GitOps Application reconciling all GKE fleet microservices and background workloads."
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/fkc1e100/gke-fleet-iac.git'
+    targetRevision: HEAD
+    path: manifests/workloads
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gke-fleet-clusters-config
+  namespace: argocd
+  annotations:
+    description: "ArgoCD GitOps Application reconciling per-cluster fleet configurations."
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/fkc1e100/gke-fleet-iac.git'
+    targetRevision: HEAD
+    path: clusters
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gke-fleet-rbac-security
+  namespace: argocd
+  annotations:
+    description: "ArgoCD GitOps Application reconciling RBAC roles, bindings, and default network policies."
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/fkc1e100/gke-fleet-iac.git'
+    targetRevision: HEAD
+    path: rbac
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
