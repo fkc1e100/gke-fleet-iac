@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cni-ip-hog
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-04
+    test.kube-agents.io/failure-type: IPExhaustion
+spec:
+  replicas: 35
+  selector:
+    matchLabels:
+      app: cni-ip-hog
+  template:
+    metadata:
+      labels:
+        app: cni-ip-hog
+    spec:
+      containers:
+      - name: pause
+        image: registry.k8s.io/pause:3.9
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-complex-04-ha-payment-gateway
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-04
+    test.kube-agents.io/failure-type: SchedulingDeadlockAndIPExhaustion
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: ha-payment-gateway
+  template:
+    metadata:
+      labels:
+        app: ha-payment-gateway
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - ha-payment-gateway
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: gateway
+        image: nginx:latest
+        resources:
+          requests:
+            cpu: "4"
+            memory: "4Gi"
+          limits:
+            cpu: "4"
+            memory: "4Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-ilb-service
+  namespace: default
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+  labels:
+    test.kube-agents.io/workload: complex-04
+    test.kube-agents.io/failure-type: GCPInternalLoadBalancerFailure
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: ha-payment-gateway

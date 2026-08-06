@@ -12,6 +12,11 @@ declare -A CLUSTERS=(
   ["cluster-08"]="gca-gke-2025:us-central1-a"
   ["cluster-09"]="gca-gke-2025:us-central1-a"
   ["cluster-10"]="gca-gke-test:us-central1-a"
+  ["complex-01"]="gca-gke-2025:us-central1-a"
+  ["complex-02"]="gca-gke-2025:us-central1-a"
+  ["complex-03"]="gca-gke-test:us-central1-a"
+  ["complex-04"]="gca-gke-test:us-central1-a"
+  ["complex-05"]="gca-gke-test:us-central1-a"
 )
 
 for c in "${!CLUSTERS[@]}"; do

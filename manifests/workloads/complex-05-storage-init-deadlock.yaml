@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-analytics-store
+  namespace: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: standard-rwd
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-complex-05-analytics-worker
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-05
+    test.kube-agents.io/failure-type: StorageMultiAttachAndGCPBucketFailure
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: analytics-worker
+  template:
+    metadata:
+      labels:
+        app: analytics-worker
+    spec:
+      initContainers:
+      - name: init-sysctl
+        image: busybox:latest
+        command: ["sh", "-c", "sysctl -w net.core.somaxconn=1024"]
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+      - name: init-gcp-storage-sync
+        image: google/cloud-sdk:slim
+        command: ["sh", "-c", "gcloud storage ls gs://nonexistent-analytics-bucket-2025 || { echo 'FATAL: Cannot connect to GCP Cloud Storage bucket'; exit 1; }"]
+      containers:
+      - name: worker
+        image: nginx:latest
+        volumeMounts:
+        - mountPath: /data
+          name: analytics-storage
+      volumes:
+      - name: analytics-storage
+        persistentVolumeClaim:
+          claimName: pvc-analytics-store

@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webhook-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webhook-sa
+  namespace: webhook-system
+  annotations:
+    iam.gke.io/gcp-service-account: non-existent-gsa@gca-gke-2025.iam.gserviceaccount.com
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admission-webhook-server
+  namespace: webhook-system
+  labels:
+    app: admission-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admission-webhook
+  template:
+    metadata:
+      labels:
+        app: admission-webhook
+    spec:
+      serviceAccountName: webhook-sa
+      containers:
+      - name: webhook
+        image: google/cloud-sdk:slim
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "Attempting to fetch TLS cert from GCP Secret Manager..."
+          gcloud secrets versions access latest --secret="webhook-tls-cert" || { echo "FATAL: Workload Identity / GCP Secret Manager authentication failed!"; exit 1; }
+          sleep 3600
+        ports:
+        - containerPort: 8443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admission-webhook-svc
+  namespace: webhook-system
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: admission-webhook
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: fleet-policy-enforcer
+  labels:
+    test.kube-agents.io/workload: complex-01
+    test.kube-agents.io/failure-type: WebhookDeadlockWorkloadIdentity
+webhooks:
+- name: fleet-policy-enforcer.kube-agents.io
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    operations: ["CREATE", "UPDATE"]
+    resources: ["pods"]
+    scope: "*"
+  clientConfig:
+    service:
+      name: admission-webhook-svc
+      namespace: webhook-system
+      path: "/mutate"
+  admissionReviewVersions: ["v1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Fail
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-complex-01-payment-api
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-01
+    test.kube-agents.io/failure-type: InterceptedDeployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: payment-api
+  template:
+    metadata:
+      labels:
+        app: payment-api
+    spec:
+      containers:
+      - name: app
+        image: nginx:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi

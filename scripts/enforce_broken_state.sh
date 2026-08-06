@@ -18,6 +18,11 @@ declare -A CLUSTERS=(
   ["cluster-08"]="gca-gke-2025:us-central1-a"
   ["cluster-09"]="gca-gke-2025:us-central1-a"
   ["cluster-10"]="gca-gke-test:us-central1-a"
+  ["complex-01"]="gca-gke-2025:us-central1-a"
+  ["complex-02"]="gca-gke-2025:us-central1-a"
+  ["complex-03"]="gca-gke-test:us-central1-a"
+  ["complex-04"]="gca-gke-test:us-central1-a"
+  ["complex-05"]="gca-gke-test:us-central1-a"
 )
 
 for c in "${!CLUSTERS[@]}"; do
@@ -42,6 +47,21 @@ for c in "${!CLUSTERS[@]}"; do
       ;;
     cluster-09)
       kubectl apply -f "${REPO_ROOT}/manifests/workloads/wl-09-flex-obtainability-timeout.yaml" || true
+      ;;
+    complex-01)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-01-webhook-deadlock.yaml" || true
+      ;;
+    complex-02)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-02-dns-netpol-failure.yaml" || true
+      ;;
+    complex-03)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-03-rbac-token-lockout.yaml" || true
+      ;;
+    complex-04)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-04-cni-affinity-exhaustion.yaml" || true
+      ;;
+    complex-05)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-05-storage-init-deadlock.yaml" || true
       ;;
   esac
 done

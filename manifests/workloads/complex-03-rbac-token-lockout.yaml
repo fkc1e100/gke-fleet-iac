@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-apps
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: restricted-sa
+  namespace: prod-apps
+  labels:
+    test.kube-agents.io/workload: complex-03
+---
+# Intentionally missing Role, ClusterRole, and GCP IAM bindings for restricted-sa
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-complex-03-config-syncer
+  namespace: prod-apps
+  labels:
+    test.kube-agents.io/workload: complex-03
+    test.kube-agents.io/failure-type: ArtifactRegistryAuthAndRBACLockout
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: config-syncer
+  template:
+    metadata:
+      labels:
+        app: config-syncer
+    spec:
+      serviceAccountName: restricted-sa
+      automountServiceAccountToken: false
+      containers:
+      - name: syncer
+        image: us-docker.pkg.dev/gca-gke-test/private-enterprise-repo/config-syncer-app:v2.1.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "Attempting to query cluster nodes via In-Cluster API..."
+          kubectl get nodes || { echo "FATAL: API call failed with 403 Forbidden!"; exit 1; }
+          sleep 3600
+        envFrom:
+        - secretRef:
+            name: missing-api-signing-key
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
