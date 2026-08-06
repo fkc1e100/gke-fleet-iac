@@ -1,0 +1,33 @@
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: fleet-postgres-db
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  region: us-central1
+  databaseVersion: POSTGRES_15
+  settings:
+    tier: db-custom-2-7680
+    availabilityType: REGIONAL
+    backupConfiguration:
+      enabled: true
+      startTime: "03:00"
+    ipConfiguration:
+      ipv4Enabled: false
+      privateNetworkRef:
+        name: fleet-vpc-network
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLDatabase
+metadata:
+  name: payment_db
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  instanceRef:
+    name: fleet-postgres-db
+  charset: UTF8
+  collation: en_US.UTF8

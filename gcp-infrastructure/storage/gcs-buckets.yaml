@@ -1,0 +1,29 @@
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: gke-fleet-analytics-data-2025
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  location: US-CENTRAL1
+  storageClass: STANDARD
+  uniformBucketLevelAccess: true
+  versioning:
+    enabled: true
+  encryption:
+    defaultKmsKeyRef:
+      name: gke-fleet-cmek-key
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucketAccessControl
+metadata:
+  name: analytics-bucket-admin-access
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  bucketRef:
+    name: gke-fleet-analytics-data-2025
+  entity: "user-fcurrie@google.com"
+  role: OWNER

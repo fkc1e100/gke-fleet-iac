@@ -1,0 +1,25 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccount
+metadata:
+  name: gke-fleet-workload-gsa
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  displayName: "GKE Fleet Workload Service Account"
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyBinding
+metadata:
+  name: bind-workload-identity-gsa
+  namespace: config-connector
+  annotations:
+    cnrm.cloud.google.com/project-id: "gca-gke-2025"
+spec:
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: gke-fleet-workload-gsa
+  role: roles/iam.workloadIdentityUser
+  members:
+    - member: "serviceAccount:gca-gke-2025.svc.id.goog[default/wl-complex-01-sa]"
