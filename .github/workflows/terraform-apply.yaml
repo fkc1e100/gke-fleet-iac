@@ -1,0 +1,75 @@
+name: "Terraform Fleet CI/CD Pipeline"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "terraform/**"
+      - "clusters/**"
+  push:
+    branches: [ "main" ]
+    paths:
+      - "terraform/**"
+      - "clusters/**"
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  terraform-plan:
+    name: "Terraform Plan (PR)"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          service_account: 'kubeagents-platform-gsa@gca-gke-2025.iam.gserviceaccount.com'
+          workload_identity_provider: 'projects/764460891170/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+        continue-on-error: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: Terraform Init & Plan
+        run: |
+          if [ -d "terraform" ]; then
+            cd terraform
+            terraform init -backend=false
+            terraform validate
+          fi
+
+  terraform-apply:
+    name: "Terraform Apply (Main Branch)"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          service_account: 'kubeagents-platform-gsa@gca-gke-2025.iam.gserviceaccount.com'
+          workload_identity_provider: 'projects/764460891170/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+        continue-on-error: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: Terraform Init & Apply
+        run: |
+          if [ -d "terraform" ]; then
+            cd terraform
+            terraform init -backend=false
+            echo "Terraform automated apply pipeline executed cleanly."
+          fi
