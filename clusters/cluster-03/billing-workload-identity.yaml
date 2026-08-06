@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: billing-service-sa
+  namespace: default
+  annotations:
+    iam.gke.io/gcp-service-account: billing-gsa@gca-gke-2025.iam.gserviceaccount.com
