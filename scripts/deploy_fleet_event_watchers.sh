@@ -25,8 +25,8 @@ for c in "${!CLUSTERS[@]}"; do
   echo "=== Deploying kube-agents event watcher to $c ($proj / $zone) ==="
   gcloud container clusters get-credentials "$c" --zone "$zone" --project "$proj"
   
-  if [ -f "clusters/$proj/$c/cluster-agent-event-watcher.yaml" ]; then
-    kubectl apply -f "clusters/$proj/$c/cluster-agent-event-watcher.yaml"
+  if [ -f "clusters/$c/cluster-agent-event-watcher.yaml" ]; then
+    kubectl apply -f "clusters/$c/cluster-agent-event-watcher.yaml"
   fi
 done
 

@@ -31,8 +31,8 @@ for c in "${!CLUSTERS[@]}"; do
   echo "=== Enforcing failing state on $c ($proj / $zone) ==="
   gcloud container clusters get-credentials "$c" --zone "$zone" --project "$proj"
   
-  if [ -f "${REPO_ROOT}/clusters/${proj}/${c}/cluster-agent-event-watcher.yaml" ]; then
-    kubectl apply -f "${REPO_ROOT}/clusters/${proj}/${c}/cluster-agent-event-watcher.yaml" || true
+  if [ -f "${REPO_ROOT}/clusters/${c}/cluster-agent-event-watcher.yaml" ]; then
+    kubectl apply -f "${REPO_ROOT}/clusters/${c}/cluster-agent-event-watcher.yaml" || true
   fi
   
   case "$c" in
