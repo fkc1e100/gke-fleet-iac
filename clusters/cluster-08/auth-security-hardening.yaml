@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-08-auth-service
+  namespace: default
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+      containers:
+      - name: auth-service
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
