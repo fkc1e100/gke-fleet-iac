@@ -1,0 +1,57 @@
+apiVersion: cloud.google.com/v1
+kind: ComputeClass
+metadata:
+  name: a100-gpu-class
+spec:
+  priorities:
+  - machineType: "a2-ultragpu-1g"
+    gpu:
+      type: "nvidia-a100-80gb"
+      count: 1
+    spot: true
+  - machineType: "g2-standard-12"
+    gpu:
+      type: "nvidia-l4"
+      count: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-complex-06-llm-batch-inference
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-06
+    test.kube-agents.io/failure-type: ComputeClassGPUStockoutAutoscaling
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: llm-batch-inference
+  template:
+    metadata:
+      labels:
+        app: llm-batch-inference
+    spec:
+      nodeSelector:
+        cloud.google.com/compute-class: "a100-gpu-class"
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "cloud.google.com/gke-spot"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      containers:
+      - name: llm-worker
+        image: gcr.io/kaggle-gpu-images/python:latest
+        command: ["python3", "-c", "import time; print('Starting LLM Inference Worker via ComputeClass...'); time.sleep(3600)"]
+        resources:
+          requests:
+            cpu: "8"
+            memory: "32Gi"
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "8"
+            memory: "32Gi"
+            nvidia.com/gpu: "1"

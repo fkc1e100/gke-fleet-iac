@@ -23,6 +23,7 @@ declare -A CLUSTERS=(
   ["complex-03"]="gca-gke-test:us-central1-a"
   ["complex-04"]="gca-gke-test:us-central1-a"
   ["complex-05"]="gca-gke-test:us-central1-a"
+  ["complex-06"]="gca-gke-2025:us-central1-a"
 )
 
 for c in "${!CLUSTERS[@]}"; do
@@ -62,6 +63,9 @@ for c in "${!CLUSTERS[@]}"; do
       ;;
     complex-05)
       kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-05-storage-init-deadlock.yaml" || true
+      ;;
+    complex-06)
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/complex-06-gpu-stockout-autoscaling.yaml" || true
       ;;
   esac
 done

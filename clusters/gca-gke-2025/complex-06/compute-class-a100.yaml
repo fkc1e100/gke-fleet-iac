@@ -1,0 +1,21 @@
+apiVersion: cloud.google.com/v1
+kind: ComputeClass
+metadata:
+  name: a100-gpu-class
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: complex-06
+    test.kube-agents.io/component: custom-compute-class
+spec:
+  prioritizedNodePools:
+  - name: primary-a100-spot
+    nodeSelector:
+      cloud.google.com/gke-spot: "true"
+      cloud.google.com/gke-accelerator: "nvidia-tesla-a100"
+      node.kubernetes.io/instance-type: "a2-ultragpu-1g"
+      topology.kubernetes.io/zone: "us-central1-a"
+  - name: fallback-l4-gpu
+    nodeSelector:
+      cloud.google.com/gke-accelerator: "nvidia-l4"
+      node.kubernetes.io/instance-type: "g2-standard-48"
+      topology.kubernetes.io/zone: "us-central1-a"
