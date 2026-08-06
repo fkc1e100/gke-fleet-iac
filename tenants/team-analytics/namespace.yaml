@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-analytics
+  labels:
+    cost-center: "finops-analytics-2048"
+    owner: "data-analytics-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: team-analytics-quota
+  namespace: team-analytics
+spec:
+  hard:
+    requests.cpu: "128"
+    requests.memory: "512Gi"
+    requests.nvidia.com/gpu: "8"
+    limits.cpu: "256"
+    limits.memory: "1024Gi"
+    limits.nvidia.com/gpu: "8"
+    pods: "100"

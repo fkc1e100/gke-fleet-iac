@@ -1,0 +1,19 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedRepos
+metadata:
+  name: enforce-allowed-registries
+  annotations:
+    description: "Requires all container images to originate from approved GCP / Enterprise registries."
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    repos:
+      - "gcr.io/"
+      - "us-docker.pkg.dev/"
+      - "docker.io/library/python"
+      - "docker.io/library/nginx"
+      - "docker.io/library/postgres"
+      - "ghcr.io/gke-labs/"

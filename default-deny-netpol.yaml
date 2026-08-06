@@ -1,1 +1,12 @@
-# Default Deny NetworkPolicy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: default
+  annotations:
+    description: "Enterprise Zero-Trust baseline policy isolating all ingress and egress traffic unless explicitly permitted."
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress

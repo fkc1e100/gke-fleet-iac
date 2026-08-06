@@ -1,0 +1,32 @@
+name: "Terraform CI & Security Scan"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "terraform/**"
+      - "clusters/**/terraform/**"
+
+jobs:
+  validate:
+    name: "Validate & Scan Terraform"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: v0.47.0
+
+      - name: Run TFLint
+        run: tflint --init && tflint --recursive

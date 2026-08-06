@@ -1,0 +1,19 @@
+# Terraform ignore
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# Benchmark Ground Truth Isolation (hidden from LLM agents)
+benchmark/ground_truth.json
+
+# OS & IDE ignore
+.DS_Store
+.idea/
+.vscode/

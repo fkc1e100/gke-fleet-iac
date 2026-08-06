@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Dependabot configuration for GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Dependabot configuration for Terraform Modules & Providers
+  - package-ecosystem: "terraform"
+    directory: "/terraform/modules/gke-cluster"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "terraform"
+    directory: "/clusters/complex-01-webhook-deadlock-wi-auth/terraform"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5

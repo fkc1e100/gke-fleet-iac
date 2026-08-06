@@ -1,0 +1,19 @@
+# Enterprise Monorepo CODEOWNERS Specification
+
+# Global Repository Administrators
+*                       @fkc1e100
+
+# Infrastructure & Terraform Modules
+/terraform/             @fkc1e100
+/clusters/*/terraform/  @fkc1e100
+
+# Declarative GCP Infrastructure (Config Connector)
+/gcp-infrastructure/    @fkc1e100
+
+# Policy as Code & Governance
+/governance/            @fkc1e100
+/default-deny-netpol.yaml @fkc1e100
+
+# Application Workloads & Tenants
+/manifests/             @fkc1e100
+/tenants/               @fkc1e100

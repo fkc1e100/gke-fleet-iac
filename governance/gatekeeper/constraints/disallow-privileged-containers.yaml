@@ -1,0 +1,15 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSAPrivilegedContainers
+metadata:
+  name: disallow-privileged-containers
+  annotations:
+    description: "Disallows privileged mode containers enterprise-wide to comply with Pod Security Restricted standards."
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    exemptNamespaces:
+      - "kube-system"
+      - "kubeagents-system"

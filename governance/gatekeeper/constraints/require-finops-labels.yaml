@@ -1,0 +1,15 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: require-finops-labels
+  annotations:
+    description: "Requires cost-center and owner labels on all Namespaces for enterprise chargeback."
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Namespace"]
+  parameters:
+    labels:
+      - key: "cost-center"
+      - key: "owner"

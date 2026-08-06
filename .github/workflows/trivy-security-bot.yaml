@@ -1,0 +1,23 @@
+name: "Trivy Security Review Bot"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-review:
+    name: "Run Security Scan & Review"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy Security Review
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          hide-shortcut-text: "true"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+          output: "trivy-results.sarif"
+          format: "sarif"
