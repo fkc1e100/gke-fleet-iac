@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-01-payment-service
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: payment-service
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi"
