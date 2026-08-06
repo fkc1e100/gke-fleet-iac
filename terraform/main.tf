@@ -8,24 +8,22 @@ terraform {
   }
 }
 
-variable "project_2025" {
-  type    = string
-  default = "gca-gke-2025"
+provider "google" {
+  alias   = "proj2025"
+  project = "gca-gke-2025"
+  region  = "us-central1"
 }
 
-variable "project_test" {
-  type    = string
-  default = "gca-gke-test"
+provider "google" {
+  alias   = "projtest"
+  project = "gca-gke-test"
+  region  = "us-central1"
 }
 
-variable "region" {
-  type    = string
-  default = "us-central1"
-}
-
-variable "zone" {
-  type    = string
-  default = "us-central1-a"
+# Default provider fallback
+provider "google" {
+  project = "gca-gke-2025"
+  region  = "us-central1"
 }
 
 # -------------------------------------------------------------------
@@ -45,11 +43,15 @@ module "fleet_clusters_2025" {
     "complex-06"
   ])
 
+  providers = {
+    google = google.proj2025
+  }
+
   source       = "./modules/gke-cluster"
   cluster_name = each.value
-  project_id   = var.project_2025
-  region       = var.region
-  zone         = var.zone
+  project_id   = "gca-gke-2025"
+  region       = "us-central1"
+  zone         = "us-central1-a"
   node_count   = 2
   machine_type = "e2-standard-2"
 }
@@ -68,12 +70,15 @@ module "fleet_clusters_test" {
     "complex-07"
   ])
 
+  providers = {
+    google = google.projtest
+  }
+
   source       = "./modules/gke-cluster"
   cluster_name = each.value
-  project_id   = var.project_test
-  region       = var.region
-  zone         = var.zone
+  project_id   = "gca-gke-test"
+  region       = "us-central1"
+  zone         = "us-central1-a"
   node_count   = 2
   machine_type = "e2-standard-2"
 }
-# Triggering automated fleet cluster deployment across gca-gke-2025 and gca-gke-test
