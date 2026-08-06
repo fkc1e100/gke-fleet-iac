@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-unbound-claim
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: fast-nvme-ssd-nonexistent
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-05-stateful-db
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: cluster-05
+    test.kube-agents.io/failure-type: PVCUnboundStorageClass
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stateful-db
+  template:
+    metadata:
+      labels:
+        app: stateful-db
+    spec:
+      containers:
+      - name: db
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_PASSWORD
+          value: example
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data-volume
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: pvc-unbound-claim

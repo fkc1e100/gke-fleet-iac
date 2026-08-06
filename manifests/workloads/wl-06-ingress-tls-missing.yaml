@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-06-frontend-web
+  namespace: default
+  labels:
+    app: frontend-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-web
+  template:
+    metadata:
+      labels:
+        app: frontend-web
+    spec:
+      containers:
+      - name: web
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-web-svc
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: frontend-web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wl-06-ingress-tls-fail
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: cluster-06
+    test.kube-agents.io/failure-type: IngressTLSCertMissing
+spec:
+  tls:
+  - hosts:
+    - app.example.com
+    secretName: prod-tls-cert-missing-secret
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-web-svc
+            port:
+              number: 80

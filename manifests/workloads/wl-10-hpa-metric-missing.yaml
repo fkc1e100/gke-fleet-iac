@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-10-worker
+  namespace: default
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker-app
+        image: python:3.9-slim
+        command: ["python3", "-c", "import time; print('Worker running...'); time.sleep(3600)"]
+        # Intentionally missing CPU requests required by HPA
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: wl-10-hpa-cpu-fail
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: cluster-10
+    test.kube-agents.io/failure-type: HPACPUResourceRequestMissing
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: wl-10-worker
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80

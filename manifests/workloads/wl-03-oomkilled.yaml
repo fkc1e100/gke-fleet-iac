@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wl-03-memory-leak-app
+  namespace: default
+  labels:
+    test.kube-agents.io/workload: cluster-03
+    test.kube-agents.io/failure-type: OOMKilledMemoryLimit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: memory-leak-app
+  template:
+    metadata:
+      labels:
+        app: memory-leak-app
+    spec:
+      containers:
+      - name: mem-eater
+        image: python:3.9-slim
+        command: ["python3", "-c", "import time; print('Allocating memory...'); x = 'A' * (512 * 1024 * 1024); time.sleep(60)"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
