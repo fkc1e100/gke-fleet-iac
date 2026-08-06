@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-agent-api-lb
+  namespace: kubeagents-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: platform-agent-gateway
+  ports:
+  - name: api
+    port: 8642
+    targetPort: 8699
