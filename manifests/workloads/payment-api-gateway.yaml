@@ -80,6 +80,11 @@ webhooks:
   timeoutSeconds: 10
   failurePolicy: Fail
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-payments
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
