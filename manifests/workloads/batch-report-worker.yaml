@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: batch-processing
+  labels:
+    cost-center: "finops-analytics-707"
+    owner: "data-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: batch-report-worker-processor
-  namespace: default
+  namespace: batch-processing
   labels:
 spec:
   replicas: 5

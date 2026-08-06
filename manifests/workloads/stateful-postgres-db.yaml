@@ -1,8 +1,17 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-databases
+  labels:
+    cost-center: "finops-db-505"
+    owner: "data-infra-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-data-pvc
-  namespace: default
+  namespace: prod-databases
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stateful-postgres-db
-  namespace: default
+  namespace: prod-databases
   labels:
 spec:
   replicas: 1

@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-checkout
+  labels:
+    cost-center: "finops-checkout-404"
+    owner: "checkout-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: checkout-backend-api
-  namespace: default
+  namespace: prod-checkout
   labels:
 spec:
   replicas: 2

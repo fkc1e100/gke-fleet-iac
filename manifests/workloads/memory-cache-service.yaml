@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-caching
+  labels:
+    cost-center: "finops-cache-303"
+    owner: "platform-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: memory-cache-service
-  namespace: default
+  namespace: prod-caching
   labels:
 spec:
   replicas: 2

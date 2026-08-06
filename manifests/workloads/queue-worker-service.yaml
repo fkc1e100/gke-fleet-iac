@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-workers
+  labels:
+    cost-center: "finops-workers-909"
+    owner: "backend-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wl-10-worker
-  namespace: default
+  name: queue-worker-service
+  namespace: prod-workers
   labels:
     app: worker
 spec:
@@ -24,13 +33,13 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: queue-worker-hpa
-  namespace: default
+  namespace: prod-workers
   labels:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: wl-10-worker
+    name: queue-worker-service
   minReplicas: 1
   maxReplicas: 10
   metrics:

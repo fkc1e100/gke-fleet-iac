@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-training
+  labels:
+    cost-center: "finops-ai-808"
+    owner: "ai-research-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: gemma-fine-tuning-job
-  namespace: default
+  namespace: ai-training
   annotations:
     dws.gke.io/wait-timeout: "5s"
   labels:

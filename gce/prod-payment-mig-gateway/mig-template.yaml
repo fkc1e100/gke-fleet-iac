@@ -1,0 +1,56 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeInstanceTemplate
+metadata:
+  name: prod-mig-payment-template
+  namespace: prod-payments
+spec:
+  machineType: e2-standard-4
+  disk:
+    - boot: true
+      autoDelete: true
+      initializeParams:
+        image: ubuntu-os-cloud/ubuntu-2204-lts
+  networkInterface:
+    - networkRef:
+        name: default
+  serviceAccount:
+    emailRef:
+      name: restricted-gsa@gca-gke-2025.iam.gserviceaccount.com
+    scopes:
+      - "https://www.googleapis.com/auth/cloud-platform"
+  metadata:
+    startup-script: |
+      #!/bin/bash
+      echo "Fetching payment encryption key from Secret Manager..."
+      gcloud secrets versions access latest --secret="payment-kms-key" || { echo "FATAL: IAM 403 Permission Denied"; exit 1; }
+      python3 -m http.server 8080
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeHealthCheck
+metadata:
+  name: mig-http-health-check
+  namespace: prod-payments
+spec:
+  checkIntervalSec: 5
+  timeoutSec: 5
+  healthyThreshold: 2
+  unhealthyThreshold: 2
+  httpHealthCheck:
+    port: 8080
+    requestPath: "/healthz"
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeRegionInstanceGroupManager
+metadata:
+  name: prod-mig-payment-gateway
+  namespace: prod-payments
+spec:
+  region: us-central1
+  targetSize: 3
+  version:
+    - instanceTemplateRef:
+        name: prod-mig-payment-template
+  autoHealingPolicies:
+    - healthCheckRef:
+        name: mig-http-health-check
+      initialDelaySec: 30

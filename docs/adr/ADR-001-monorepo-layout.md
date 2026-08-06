@@ -10,7 +10,7 @@ The enterprise platform infrastructure consists of 17+ GKE clusters across multi
 Adopt a single consolidated Monorepo (`org-mono-repo`) containing:
 1. **`gcp-infrastructure/`**: Declarative GCP Cloud resources managed via Google Cloud Config Connector (KCC).
 2. **`clusters/`**: Flat, descriptive per-cluster folders containing IaC definitions (`terraform/`) and event watchers.
-3. **`manifests/`**: Canonical application workload deployments and failure scenarios.
+3. **`manifests/`**: Canonical application workload deployments and business domain microservices.
 4. **`governance/`**: OPA Gatekeeper policy-as-code guardrails.
 
 ## Consequences

@@ -84,7 +84,7 @@ spec:
         - |
           echo "Connecting to GCP Cloud Storage & internal Redis..."
           curl -s --connect-timeout 3 http://169.254.169.254/computeMetadata/v1/ || echo "Metadata Server connection timed out via NetworkPolicy!"
-          getent hosts db-redis-unreachable.prod-checkout.svc.cluster.local || { echo "FATAL: Could not resolve Redis host or access GCP services!"; exit 1; }
+          getent hosts db-redis.prod-checkout.svc.cluster.local || { echo "FATAL: Could not resolve Redis host or access GCP services!"; exit 1; }
           sleep 3600
         resources:
           requests:

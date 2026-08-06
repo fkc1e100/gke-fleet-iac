@@ -2,11 +2,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: platform-agent-logs-reader-binding
-  namespace: agentdev-system
+  namespace: prod-analytics
 subjects:
 - kind: ServiceAccount
-  name: kubeagents-platform-gsa
-  namespace: agentdev-system
+  name: platform-monitoring-sa
+  namespace: prod-analytics
 roleRef:
   kind: Role
   name: platform-agent-logs-reader

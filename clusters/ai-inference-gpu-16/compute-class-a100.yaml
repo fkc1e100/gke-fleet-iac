@@ -4,8 +4,6 @@ metadata:
   name: a100-gpu-class
   namespace: default
   labels:
-    test.kube-agents.io/workload: complex-06
-    test.kube-agents.io/component: custom-compute-class
 spec:
   prioritizedNodePools:
   - name: primary-a100-spot

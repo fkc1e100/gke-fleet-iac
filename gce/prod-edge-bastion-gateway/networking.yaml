@@ -1,0 +1,45 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeFirewall
+metadata:
+  name: block-bastion-ingress
+  namespace: prod-gateway
+spec:
+  networkRef:
+    name: default
+  direction: INGRESS
+  priority: 1000
+  deny:
+    - IPProtocol: tcp
+      ports:
+        - "22"
+        - "443"
+  sourceRanges:
+    - "10.0.0.0/8"
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeRoute
+metadata:
+  name: blackhole-egress-route
+  namespace: prod-gateway
+spec:
+  networkRef:
+    name: default
+  destRange: "0.0.0.0/0"
+  priority: 100
+  nextHopInstanceRef:
+    name: non-existent-nat-gateway
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeInstance
+metadata:
+  name: prod-edge-bastion-vm
+  namespace: prod-gateway
+spec:
+  zone: us-central1-a
+  machineType: e2-standard-2
+  bootDisk:
+    initializeParams:
+      image: ubuntu-os-cloud/ubuntu-2204-lts
+  networkInterface:
+    - networkRef:
+        name: default

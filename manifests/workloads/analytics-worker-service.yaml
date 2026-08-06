@@ -1,22 +1,31 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-analytics
+  labels:
+    cost-center: "finops-analytics-707"
+    owner: "data-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-analytics-store
-  namespace: default
+  name: analytics-shared-pvc
+  namespace: prod-analytics
 spec:
   accessModes:
-  - ReadWriteOnce
-  storageClassName: standard-rwd
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 20Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: analytics-worker
-  namespace: default
+  namespace: prod-analytics
   labels:
+    app: analytics-worker
 spec:
   replicas: 2
   selector:
@@ -28,22 +37,28 @@ spec:
         app: analytics-worker
     spec:
       initContainers:
-      - name: init-sysctl
+      - name: sysctl-tweak
         image: busybox:latest
         command: ["sh", "-c", "sysctl -w net.core.somaxconn=1024"]
         securityContext:
           privileged: false
-          allowPrivilegeEscalation: false
-      - name: init-gcp-storage-sync
-        image: google/cloud-sdk:slim
-        command: ["sh", "-c", "gcloud storage ls gs://analytics-raw-data-2025 || { echo 'FATAL: Cannot connect to GCP Cloud Storage bucket'; exit 1; }"]
       containers:
       - name: worker
-        image: nginx:latest
+        image: google/cloud-sdk:slim
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          echo "Processing analytics data and syncing with Cloud Storage & GCE Telemetry Exporter..."
+          gcloud storage ls gs://analytics-raw-data-2025 || echo "GCS Bucket sync failed!"
+          curl -s --connect-timeout 3 http://10.128.0.99:9090/metrics || echo "WARN: GCE FinOps Telemetry Exporter unreachable!"
+          sleep 3600
+        env:
+        - name: TELEMETRY_EXPORTER_ENDPOINT
+          value: "http://10.128.0.99:9090"
         volumeMounts:
         - mountPath: /data
-          name: analytics-storage
+          name: shared-storage
       volumes:
-      - name: analytics-storage
+      - name: shared-storage
         persistentVolumeClaim:
-          claimName: pvc-analytics-store
+          claimName: analytics-shared-pvc

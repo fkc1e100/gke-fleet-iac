@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-auth
+  labels:
+    cost-center: "finops-auth-202"
+    owner: "security-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-auth-service
-  namespace: default
+  namespace: prod-auth
 spec:
   replicas: 3
   selector:
@@ -16,3 +25,6 @@ spec:
       containers:
       - name: app
         image: gcr.io/gca-gke-2025/private-secure-app:v1.0.0
+        env:
+        - name: LEGACY_AUTH_VM_ENDPOINT
+          value: "http://10.128.0.25:8080/token"

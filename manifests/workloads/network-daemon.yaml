@@ -1,8 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod-payments
+  labels:
+    cost-center: "finops-payments-101"
+    owner: "payments-team"
+    pod-security.kubernetes.io/enforce: "baseline"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: network-daemon-spooler
-  namespace: default
+  namespace: prod-payments
 spec:
   replicas: 40
   selector:
