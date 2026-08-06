@@ -76,3 +76,4 @@ module "fleet_clusters_test" {
   node_count   = 2
   machine_type = "e2-standard-2"
 }
+# Triggering automated fleet cluster deployment across gca-gke-2025 and gca-gke-test
