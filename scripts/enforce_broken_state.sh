@@ -51,7 +51,7 @@ declare -A CLUSTER_DIRS=(
 
 for c in "${!CLUSTER_DIRS[@]}"; do
   IFS=":" read -r proj zone dir <<< "${CLUSTER_DIRS[$c]}"
-  echo "=== Enforcing failing evaluation state on GKE $dir ($proj / $zone) ==="
+  echo "=== Enforcing workload state on GKE $dir ($proj / $zone) ==="
   gcloud container clusters get-credentials "$dir" --zone "$zone" --project "$proj" || true
   
   case "$c" in
@@ -78,7 +78,7 @@ for c in "${!CLUSTER_DIRS[@]}"; do
       kubectl apply -f "${REPO_ROOT}/manifests/workloads/api-routing-proxy.yaml" || true
       ;;
     cluster-08)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/batch-report-worker-processor.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/batch-report-worker.yaml" || true
       ;;
     cluster-09)
       kubectl apply -f "${REPO_ROOT}/manifests/workloads/gemma-fine-tuning-job.yaml" || true
@@ -87,26 +87,25 @@ for c in "${!CLUSTER_DIRS[@]}"; do
       kubectl apply -f "${REPO_ROOT}/manifests/workloads/queue-worker-service.yaml" || true
       ;;
     complex-01)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/checkout-backend.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/checkout-backend-service.yaml" || true
       ;;
     complex-02)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/payment-api.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/payment-api-gateway.yaml" || true
       ;;
     complex-03)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/config-syncer.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/config-syncer-service.yaml" || true
       ;;
     complex-04)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/ha-payment-gateway.yaml" || true
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/payment-session-worker.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/ha-payment-gateway-service.yaml" || true
       ;;
     complex-05)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/analytics-worker.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/analytics-worker-service.yaml" || true
       ;;
     complex-06)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/llm-batch-inference.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/llm-batch-inference-job.yaml" || true
       ;;
     complex-07)
-      kubectl apply -f "${REPO_ROOT}/manifests/workloads/hpc-batch-analytics.yaml" || true
+      kubectl apply -f "${REPO_ROOT}/manifests/workloads/hpc-batch-analytics-job.yaml" || true
       ;;
   esac
 done
