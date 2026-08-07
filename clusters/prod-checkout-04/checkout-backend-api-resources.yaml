@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkout-backend-api
+  namespace: prod-checkout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: checkout-backend-api
+  template:
+    metadata:
+      labels:
+        app: checkout-backend-api
+    spec:
+      containers:
+      - name: api-server
+        image: gcr.io/google-samples/gb-frontend:v4
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
