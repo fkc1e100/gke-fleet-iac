@@ -13,6 +13,7 @@ metadata:
   name: payment-processor
   namespace: prod-payments
   labels:
+    app: payment-processor
 spec:
   replicas: 2
   selector:
@@ -34,3 +35,7 @@ spec:
             exit 1
           fi
           echo "Starting payment service..."
+          sleep infinity
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://payment_user:secret@stateful-postgres-db.prod-payments.svc.cluster.local:5432/payments_db"
