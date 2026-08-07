@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-cache-service
+  namespace: prod-caching
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: memory-cache-service
+  template:
+    metadata:
+      labels:
+        app: memory-cache-service
+    spec:
+      containers:
+      - name: cache-worker
+        image: redis:7-alpine
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
