@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stateful-postgres-db
+  namespace: prod-databases
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stateful-postgres-db
+  template:
+    metadata:
+      labels:
+        app: stateful-postgres-db
+    spec:
+      containers:
+      - name: db
+        image: postgres:15-alpine
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
