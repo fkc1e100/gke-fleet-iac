@@ -25,10 +25,11 @@ For complete Architectural Mandates, refer to **[`docs/architecture-board-guidel
 
 ## 🌐 Global Fleet Topology & Multi-Project Hierarchy
 
-Our multi-cluster GKE fleet and companion infrastructure span multiple Google Cloud projects across **Europe (`europe-west1`, `europe-west3`)**, **Asia-Pacific (`asia-east1`, `asia-southeast1`)**, and the **Americas (`us-central1`, `us-east`, `us-west`)**:
+Our multi-cluster GKE fleet and companion infrastructure span across **two distinct Google Cloud Organizations** and regions worldwide (**Europe**, **Asia-Pacific**, and **Americas**):
 
-* **Organization**: `google.com` (`926317919369`)
-  * **Host Project (`gca-gke-2025`)**: Core transaction services, user auth, AI model fine-tuning (DWS), and GPU LLM batch inference.
+* **🏢 Primary Production Organization (`926317919369`)**:
+  * **Host Project (`gca-gke-2025`)**: Core transaction services, user authentication, AI model fine-tuning (DWS), and GPU LLM batch inference.
+* **🏢 Dedicated Fleet & Sandbox Organization (`433637338589`)**:
   * **Secondary Fleet Project (`gca-gke-test`)**: Edge ingress routing, catalog sync, high-availability payment gateways, and HPC batch analytics.
 
 📖 **For the full cluster inventory, region-by-region breakdowns, and workload mappings, see [Global Fleet Topology Guide (`docs/FLEET_TOPOLOGY.md`)](file:///usr/local/google/home/fcurrie/Projects/gke-fleet-iac/docs/FLEET_TOPOLOGY.md)**.
