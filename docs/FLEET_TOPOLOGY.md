@@ -73,7 +73,7 @@ flowchart TD
         C_CHK_US["☸️ prod-checkout-04 (us-east4-a / us-central1-a)<br>📦 checkout-backend-api / db-redis"]
         C_PIPE_US["☸️ prod-data-pipeline-03 (us-east1-b / us-central1-a)<br>📦 memory-cache / queue-worker"]
         C_DB_US["☸️ prod-storage-db-05 (us-west1-a / us-central1-a)<br>📦 stateful-postgres-db (Database Tier)"]
-        C_BATCH_US["batch-analytics-08 (us-west2-a / us-central1-a)<br>📦 batch-report-worker (Reporting ETL)"]
+        C_BATCH_US["☸️ batch-analytics-08 (us-west2-a / us-central1-a)<br>📦 batch-report-worker (Reporting ETL)"]
         C_INF_US["☸️ ai-inference-gpu-16 (us-central1-a)<br>📦 llm-batch-inference (A100 GPU Class)"]
         C_DWS_US["☸️ ai-training-dws-09 (us-central1-a)<br>📦 gemma-fine-tuning-job (Primary Host)"]
     end
