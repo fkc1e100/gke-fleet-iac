@@ -25,9 +25,13 @@ spec:
     spec:
       containers:
       - name: app
-        image: bash:latest
-        command: ["/bin/sh", "-c"]
-        args:
+        image: docker.io/library/bash:latest
+        env:
+        - name: DATABASE_URL
+          value: placeholder-value-please-update
+        command:
+        - /bin/sh
+        - -c
         - |
           if [ -z "$DATABASE_URL" ]; then
             echo "FATAL: Mandatory environment variable DATABASE_URL is missing!"
