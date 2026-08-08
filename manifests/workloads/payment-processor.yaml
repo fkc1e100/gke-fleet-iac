@@ -24,13 +24,13 @@ spec:
         app: payment-processor
     spec:
       containers:
-      - name: app
-        image: bash:latest
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          if [ -z "$DATABASE_URL" ]; then
-            echo "FATAL: Mandatory environment variable DATABASE_URL is missing!"
-            exit 1
-          fi
-          echo "Starting payment service..."
+        - name: app
+          image: bash:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              if [ -z "$DATABASE_URL" ]; then
+                echo "FATAL: Mandatory environment variable DATABASE_URL is missing!"
+                exit 1
+              fi
+              echo "Starting payment service..."

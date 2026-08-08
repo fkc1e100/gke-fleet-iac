@@ -25,9 +25,14 @@ spec:
         app: worker
     spec:
       containers:
-      - name: worker-app
-        image: python:3.9-slim
-        command: ["python3", "-c", "import time; print('Worker running...'); time.sleep(3600)"]
+        - name: worker-app
+          image: python:3.9-slim
+          command:
+            [
+              "python3",
+              "-c",
+              "import time; print('Worker running...'); time.sleep(3600)",
+            ]
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -43,9 +48,9 @@ spec:
   minReplicas: 1
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80

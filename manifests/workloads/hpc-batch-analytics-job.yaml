@@ -15,10 +15,10 @@ metadata:
   labels:
 spec:
   priorities:
-  - machineType: "c2-standard-60"
-    spot: true
-  - machineType: "c3-standard-88"
-    spot: true
+    - machineType: "c2-standard-60"
+      spot: true
+    - machineType: "c3-standard-88"
+      spot: true
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,18 +39,23 @@ spec:
       nodeSelector:
         cloud.google.com/compute-class: "cpu-hpc-compute-class"
       tolerations:
-      - key: "cloud.google.com/gke-spot"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
+        - key: "cloud.google.com/gke-spot"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       containers:
-      - name: analytics-worker
-        image: python:3.9-slim
-        command: ["python3", "-c", "import time; print('Starting High-Core CPU HPC Analytics Worker...'); time.sleep(3600)"]
-        resources:
-          requests:
-            cpu: "56"
-            memory: "200Gi"
-          limits:
-            cpu: "56"
-            memory: "200Gi"
+        - name: analytics-worker
+          image: python:3.9-slim
+          command:
+            [
+              "python3",
+              "-c",
+              "import time; print('Starting High-Core CPU HPC Analytics Worker...'); time.sleep(3600)",
+            ]
+          resources:
+            requests:
+              cpu: "56"
+              memory: "200Gi"
+            limits:
+              cpu: "56"
+              memory: "200Gi"

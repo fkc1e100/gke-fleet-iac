@@ -17,3 +17,8 @@ output "get_credentials_command" {
   description = "gcloud CLI command to retrieve cluster credentials"
   value       = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${var.project_id}"
 }
+
+output "region" {
+  description = "The GCP Region of the cluster"
+  value       = var.region
+}

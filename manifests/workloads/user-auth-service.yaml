@@ -23,8 +23,8 @@ spec:
         app: user-auth-service
     spec:
       containers:
-      - name: app
-        image: gcr.io/gca-gke-2025/private-secure-app:v1.0.0
-        env:
-        - name: LEGACY_AUTH_VM_ENDPOINT
-          value: "http://10.128.0.25:8080/token"
+        - name: app
+          image: gcr.io/enterprise-platform/user-auth-app:v1.0.0
+          env:
+            - name: LEGACY_AUTH_VM_ENDPOINT
+              value: "http://10.128.0.25:8080/token"

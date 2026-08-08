@@ -9,7 +9,7 @@ metadata:
   name: webhook-sa
   namespace: webhook-system
   annotations:
-    iam.gke.io/gcp-service-account: vault-auth-sa@gca-gke-2025.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: vault-auth-sa@enterprise-platform-domain.iam.gserviceaccount.com
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,20 +30,20 @@ spec:
     spec:
       serviceAccountName: webhook-sa
       containers:
-      - name: webhook
-        image: google/cloud-sdk:slim
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          echo "Connecting to hybrid GCE MIG backend prod-payment-mig-gateway (10.128.0.50:8080)..."
-          curl -s --connect-timeout 3 http://10.128.0.50:8080/healthz || echo "WARN: GCE MIG backend healthcheck unreachable!"
-          gcloud secrets versions access latest --secret="webhook-tls-cert" || { echo "FATAL: Workload Identity / GCP Secret Manager authentication failed!"; exit 1; }
-          sleep 3600
-        ports:
-        - containerPort: 8443
-        env:
-        - name: GCE_MIG_BACKEND_URL
-          value: "http://10.128.0.50:8080"
+        - name: webhook
+          image: google/cloud-sdk:slim
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Connecting to hybrid GCE MIG backend prod-payment-mig-gateway (10.128.0.50:8080)..."
+              curl -s --connect-timeout 3 http://10.128.0.50:8080/healthz || echo "WARN: GCE MIG backend healthcheck unreachable!"
+              gcloud secrets versions access latest --secret="webhook-tls-cert" || { echo "FATAL: Workload Identity / GCP Secret Manager authentication failed!"; exit 1; }
+              sleep 3600
+          ports:
+            - containerPort: 8443
+          env:
+            - name: GCE_MIG_BACKEND_URL
+              value: "http://10.128.0.50:8080"
 ---
 apiVersion: v1
 kind: Service
@@ -52,8 +52,8 @@ metadata:
   namespace: webhook-system
 spec:
   ports:
-  - port: 443
-    targetPort: 8443
+    - port: 443
+      targetPort: 8443
   selector:
     app: admission-webhook
 ---
@@ -63,22 +63,22 @@ metadata:
   name: fleet-policy-enforcer
   labels:
 webhooks:
-- name: fleet-policy-enforcer.omniretail.io
-  rules:
-  - apiGroups: [""]
-    apiVersions: ["v1"]
-    operations: ["CREATE", "UPDATE"]
-    resources: ["pods"]
-    scope: "*"
-  clientConfig:
-    service:
-      name: admission-webhook-svc
-      namespace: webhook-system
-      path: "/mutate"
-  admissionReviewVersions: ["v1"]
-  sideEffects: None
-  timeoutSeconds: 10
-  failurePolicy: Fail
+  - name: fleet-policy-enforcer.omniretail.io
+    rules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+        scope: "*"
+    clientConfig:
+      service:
+        name: admission-webhook-svc
+        namespace: webhook-system
+        path: "/mutate"
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 10
+    failurePolicy: Fail
 ---
 apiVersion: v1
 kind: Namespace
@@ -102,9 +102,9 @@ spec:
         app: payment-api
     spec:
       containers:
-      - name: app
-        image: nginx:latest
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
+        - name: app
+          image: nginx:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi

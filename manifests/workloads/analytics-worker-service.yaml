@@ -37,28 +37,28 @@ spec:
         app: analytics-worker
     spec:
       initContainers:
-      - name: sysctl-tweak
-        image: busybox:latest
-        command: ["sh", "-c", "sysctl -w net.core.somaxconn=1024"]
-        securityContext:
-          privileged: false
+        - name: sysctl-tweak
+          image: busybox:latest
+          command: ["sh", "-c", "sysctl -w net.core.somaxconn=1024"]
+          securityContext:
+            privileged: false
       containers:
-      - name: worker
-        image: google/cloud-sdk:slim
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          echo "Processing analytics data and syncing with Cloud Storage & GCE Telemetry Exporter..."
-          gcloud storage ls gs://analytics-raw-data-2025 || echo "GCS Bucket sync failed!"
-          curl -s --connect-timeout 3 http://10.128.0.99:9090/metrics || echo "WARN: GCE FinOps Telemetry Exporter unreachable!"
-          sleep 3600
-        env:
-        - name: TELEMETRY_EXPORTER_ENDPOINT
-          value: "http://10.128.0.99:9090"
-        volumeMounts:
-        - mountPath: /data
-          name: shared-storage
+        - name: worker
+          image: google/cloud-sdk:slim
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Processing analytics data and syncing with Cloud Storage & GCE Telemetry Exporter..."
+              gcloud storage ls gs://analytics-raw-data-2025 || echo "GCS Bucket sync failed!"
+              curl -s --connect-timeout 3 http://10.128.0.99:9090/metrics || echo "WARN: GCE FinOps Telemetry Exporter unreachable!"
+              sleep 3600
+          env:
+            - name: TELEMETRY_EXPORTER_ENDPOINT
+              value: "http://10.128.0.99:9090"
+          volumeMounts:
+            - mountPath: /data
+              name: shared-storage
       volumes:
-      - name: shared-storage
-        persistentVolumeClaim:
-          claimName: analytics-shared-pvc
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: analytics-shared-pvc

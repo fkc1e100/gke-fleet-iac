@@ -4,6 +4,6 @@ metadata:
   name: platform-agent-logs-reader
   namespace: agentdev-system
 rules:
-- apiGroups: [""]
-  resources: ["pods/log"]
-  verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]

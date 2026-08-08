@@ -13,8 +13,8 @@ spec:
   selector:
     app: db-redis
   ports:
-  - port: 6379
-    name: redis
+    - port: 6379
+      name: redis
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -33,10 +33,10 @@ spec:
         app: db-redis
     spec:
       containers:
-      - name: redis
-        image: redis:7-alpine
-        ports:
-        - containerPort: 6379
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -49,16 +49,16 @@ spec:
     matchLabels:
       app: checkout-backend
   policyTypes:
-  - Egress
+    - Egress
   egress:
-  - to:
-    - ipBlock:
-        cidr: 10.0.0.0/8
-    ports:
-    - protocol: TCP
-      port: 80
-    - protocol: TCP
-      port: 443
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 80
+        - protocol: TCP
+          port: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -77,16 +77,16 @@ spec:
         app: checkout-backend
     spec:
       containers:
-      - name: backend
-        image: google/cloud-sdk:slim
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          echo "Connecting to GCP Cloud Storage & internal Redis..."
-          curl -s --connect-timeout 3 http://169.254.169.254/computeMetadata/v1/ || echo "Metadata Server connection timed out via NetworkPolicy!"
-          getent hosts db-redis.prod-checkout.svc.cluster.local || { echo "FATAL: Could not resolve Redis host or access GCP services!"; exit 1; }
-          sleep 3600
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
+        - name: backend
+          image: google/cloud-sdk:slim
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Connecting to GCP Cloud Storage & internal Redis..."
+              curl -s --connect-timeout 3 http://169.254.169.254/computeMetadata/v1/ || echo "Metadata Server connection timed out via NetworkPolicy!"
+              getent hosts db-redis.prod-checkout.svc.cluster.local || { echo "FATAL: Could not resolve Redis host or access GCP services!"; exit 1; }
+              sleep 3600
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi

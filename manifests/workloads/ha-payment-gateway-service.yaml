@@ -24,12 +24,12 @@ spec:
         app: payment-session-worker
     spec:
       containers:
-      - name: pause
-        image: registry.k8s.io/pause:3.9
-        resources:
-          requests:
-            cpu: 10m
-            memory: 16Mi
+        - name: pause
+          image: registry.k8s.io/pause:3.9
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,23 +50,23 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - ha-payment-gateway
-            topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - ha-payment-gateway
+              topologyKey: "kubernetes.io/hostname"
       containers:
-      - name: gateway
-        image: nginx:latest
-        resources:
-          requests:
-            cpu: "4"
-            memory: "4Gi"
-          limits:
-            cpu: "4"
-            memory: "4Gi"
+        - name: gateway
+          image: nginx:latest
+          resources:
+            requests:
+              cpu: "4"
+              memory: "4Gi"
+            limits:
+              cpu: "4"
+              memory: "4Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -79,7 +79,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 443
-    targetPort: 8443
+    - port: 443
+      targetPort: 8443
   selector:
     app: ha-payment-gateway

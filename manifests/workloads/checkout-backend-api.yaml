@@ -24,11 +24,11 @@ spec:
         app: backend-api
     spec:
       containers:
-      - name: api-server
-        image: nginx:alpine
-        env:
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: DATABASE_PASSWORD
+        - name: api-server
+          image: nginx:alpine
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DATABASE_PASSWORD

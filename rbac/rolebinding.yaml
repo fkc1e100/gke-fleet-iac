@@ -4,9 +4,9 @@ metadata:
   name: platform-agent-logs-reader-binding
   namespace: prod-analytics
 subjects:
-- kind: ServiceAccount
-  name: platform-monitoring-sa
-  namespace: prod-analytics
+  - kind: ServiceAccount
+    name: platform-monitoring-sa
+    namespace: prod-analytics
 roleRef:
   kind: Role
   name: platform-agent-logs-reader

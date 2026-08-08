@@ -24,13 +24,18 @@ spec:
         app: memory-cache-service
     spec:
       containers:
-      - name: cache-worker
-        image: python:3.9-slim
-        command: ["python3", "-c", "import time; print('Allocating memory...'); x = 'A' * (512 * 1024 * 1024); time.sleep(60)"]
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "64Mi"
-          limits:
-            cpu: "200m"
-            memory: "128Mi"
+        - name: cache-worker
+          image: python:3.9-slim
+          command:
+            [
+              "python3",
+              "-c",
+              "import time; print('Allocating memory...'); x = 'A' * (512 * 1024 * 1024); time.sleep(60)",
+            ]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"

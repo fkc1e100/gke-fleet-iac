@@ -25,6 +25,6 @@ spec:
       nodeSelector:
         cloud.google.com/gke-flex: "true"
       containers:
-      - name: trainer
-        image: gcr.io/kaggle-gpu-images/python:latest
-        command: ["python3", "-c", "print('Flex DWS Training Job')"]
+        - name: trainer
+          image: gcr.io/kaggle-gpu-images/python:latest
+          command: ["python3", "-c", "print('Flex DWS Training Job')"]

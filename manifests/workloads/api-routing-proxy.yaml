@@ -24,13 +24,13 @@ spec:
         app: api-gateway
     spec:
       containers:
-      - name: gateway
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: gateway
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5

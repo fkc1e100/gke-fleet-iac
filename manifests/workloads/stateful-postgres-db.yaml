@@ -37,15 +37,15 @@ spec:
         app: stateful-db
     spec:
       containers:
-      - name: db
-        image: postgres:15-alpine
-        env:
-        - name: POSTGRES_PASSWORD
-          value: example
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: data-volume
+        - name: db
+          image: postgres:15-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              value: example
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data-volume
       volumes:
-      - name: data-volume
-        persistentVolumeClaim:
-          claimName: postgres-data-pvc
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: postgres-data-pvc

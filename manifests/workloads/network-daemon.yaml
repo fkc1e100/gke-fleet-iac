@@ -23,9 +23,9 @@ spec:
         app: network-daemon
     spec:
       containers:
-      - name: pause
-        image: registry.k8s.io/pause:3.9
-        resources:
-          requests:
-            cpu: "10m"
-            memory: "16Mi"
+        - name: pause
+          image: registry.k8s.io/pause:3.9
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"

@@ -28,15 +28,15 @@ spec:
         node.kubernetes.io/instance-type: "a2-highgpu-1g"
         topology.kubernetes.io/zone: "us-central1-a"
       containers:
-      - name: processor
-        image: ubuntu:22.04
-        command: ["sleep", "3600"]
-        resources:
-          requests:
-            cpu: "4"
-            memory: "16Gi"
-            nvidia.com/gpu: "1"
-          limits:
-            cpu: "4"
-            memory: "16Gi"
-            nvidia.com/gpu: "1"
+        - name: processor
+          image: ubuntu:22.04
+          command: ["sleep", "3600"]
+          resources:
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+              nvidia.com/gpu: "1"
+            limits:
+              cpu: "4"
+              memory: "16Gi"
+              nvidia.com/gpu: "1"
