@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: batch-report-worker-processor
+  namespace: batch-processing
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: batch-report-worker-processor
+  template:
+    metadata:
+      labels:
+        app: batch-report-worker-processor
+    spec:
+      containers:
+      - name: processor
+        image: python:3.11-slim
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 4Gi
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: 4000m
+            memory: 8Gi
+            nvidia.com/gpu: "1"
