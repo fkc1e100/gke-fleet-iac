@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: blocking-catalog-pdb
+  namespace: prod-apps
+  labels:
+    app: config-syncer
+spec:
+  minAvailable: 100%
+  selector:
+    matchLabels:
+      app: config-syncer
