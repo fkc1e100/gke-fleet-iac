@@ -18,58 +18,74 @@ This infrastructure landscape reflects the real-world **merger of two global e-c
   - **Workloads**: High-throughput public edge ingress routing, multi-region catalog synchronization, European high-availability payment fallback gateways, and CPU-intensive HPC batch compute.
 
 ```mermaid
-flowchart TD
-    subgraph ORG1["🏢 Primary Enterprise Org: gkedemos.joonix.net (ID: 926317919369)"]
-        P1["Project: gca-gke-2025 (764460891170)<br>Core Platform & AI Host"]
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#1a73e8', 'primaryTextColor': '#202124', 'lineColor': '#5f6368', 'fontFamily': 'Inter, -apple-system, sans-serif', 'fontSize': '13px' }}}%%
+flowchart TB
+    subgraph ORG1["🏢 Primary Enterprise: gkedemos.joonix.net (Org ID: 926317919369)"]
+        P1["📁 Host Project: gca-gke-2025 (764460891170)<br>Core Transactional & AI Platform"]
 
-        EU1["Europe (europe-west1 / europe-west3)"]
-        APAC1["Asia-Pacific (asia-east1 / asia-southeast1)"]
-        US1["Americas (us-central1 / us-east / us-west)"]
+        subgraph P1_EU["🇪🇺 Europe Region (europe-west1 / europe-west3)"]
+            C_DWS_EU["☸️ ai-training-dws-09 (europe-west1-b)<br>📦 gemma-fine-tuning-job"]
+            C_CHKG_EU["☸️ prod-checkout-gateway-11 (europe-west3-a)<br>📦 checkout-backend"]
+        end
 
-        P1 --> EU1
-        P1 --> APAC1
-        P1 --> US1
+        subgraph P1_APAC["🌏 Asia-Pacific Region (asia-east1 / asia-southeast1)"]
+            C_ORD_APAC["☸️ prod-order-processing-12 (asia-east1-a)<br>📦 config-syncer"]
+            C_INF_APAC["☸️ ai-inference-gpu-16 (asia-southeast1-a)<br>📦 llm-batch-inference"]
+        end
 
-        EU1 --> C_DWS_EU["ai-training-dws-09 (europe-west1-b)<br>gemma-fine-tuning-job"]
-        EU1 --> C_CHKG_EU["prod-checkout-gateway-11 (europe-west3-a)<br>checkout-backend"]
+        subgraph P1_US["🇺🇸 Americas Region (us-central1 / us-east / us-west)"]
+            C_CORE_US["☸️ prod-core-api-01 (us-central1-a)<br>📦 payment-processor"]
+            C_AUTH_US["☸️ prod-user-auth-02 (us-central1-a)<br>📦 user-auth-service"]
+            C_CHK_US["☸️ prod-checkout-04 (us-east4-a)<br>📦 checkout-backend-api / db-redis"]
+            C_PIPE_US["☸️ prod-data-pipeline-03 (us-east1-b)<br>📦 memory-cache / queue-worker"]
+            C_DB_US["☸️ prod-storage-db-05 (us-west1-a)<br>📦 stateful-postgres-db"]
+            C_BATCH_US["☸️ batch-analytics-08 (us-west2-a)<br>📦 batch-report-worker"]
+            C_INF_US["☸️ ai-inference-gpu-16 (us-central1-a)<br>📦 llm-batch-inference (A100 GPU)"]
+        end
 
-        APAC1 --> C_ORD_APAC["prod-order-processing-12 (asia-east1-a)<br>config-syncer"]
-        APAC1 --> C_INF_APAC["ai-inference-gpu-16 (asia-southeast1-a)<br>llm-batch-inference"]
-
-        US1 --> C_CORE_US["prod-core-api-01 (us-central1-a)<br>payment-processor"]
-        US1 --> C_AUTH_US["prod-user-auth-02 (us-central1-a)<br>user-auth-service"]
-        US1 --> C_CHK_US["prod-checkout-04 (us-east4-a / us-central1-a)<br>checkout-backend-api / db-redis"]
-        US1 --> C_PIPE_US["prod-data-pipeline-03 (us-east1-b / us-central1-a)<br>memory-cache / queue-worker"]
-        US1 --> C_DB_US["prod-storage-db-05 (us-west1-a / us-central1-a)<br>stateful-postgres-db"]
-        US1 --> C_BATCH_US["batch-analytics-08 (us-west2-a / us-central1-a)<br>batch-report-worker"]
-        US1 --> C_INF_US["ai-inference-gpu-16 (us-central1-a)<br>llm-batch-inference (A100 GPU)"]
+        P1 --> P1_EU
+        P1 --> P1_APAC
+        P1 --> P1_US
     end
 
-    subgraph ORG2["🏢 Acquired Retail Org: google.com (ID: 433637338589)"]
-        FOLDER["Folder: dev_projects (657923791383)"]
-        P2["Project: gca-gke-test (825476174734)<br>Edge & Analytics Fleet"]
-
+    subgraph ORG2["🏢 Acquired Retail Brand: google.com (Org ID: 433637338589)"]
+        FOLDER["📂 dev_projects (folders/657923791383)"]
+        P2["📁 Fleet Project: gca-gke-test (825476174734)<br>Edge Ingress, Analytics & HA Gateways"]
         FOLDER --> P2
 
-        EU2["Europe (europe-west1 / europe-west3)"]
-        APAC2["Asia-Pacific (asia-east1 / asia-southeast1)"]
-        US2["Americas (us-central1 / us-east / us-west)"]
+        subgraph P2_EU["🇪🇺 Europe Region (europe-west1 / europe-west3)"]
+            T_CAT_EU["☸️ prod-catalog-sync-13 (europe-west1-c)<br>📦 config-syncer (Catalog)"]
+            T_PAY_EU["☸️ prod-ha-payments-14 (europe-west3-b)<br>📦 ha-payment-gateway"]
+        end
 
-        P2 --> EU2
-        P2 --> APAC2
-        P2 --> US2
+        subgraph P2_APAC["🌏 Asia-Pacific Region (asia-east1 / asia-southeast1)"]
+            T_STORE_APAC["☸️ prod-analytics-store-15 (asia-east1-b)<br>📦 analytics-worker (Shared PVC)"]
+            T_HPC_APAC["☸️ hpc-batch-compute-17 (asia-southeast1-b)<br>📦 hpc-batch-analytics"]
+        end
 
-        EU2 --> T_CAT_EU["prod-catalog-sync-13 (europe-west1-c)<br>config-syncer (Catalog)"]
-        EU2 --> T_PAY_EU["prod-ha-payments-14 (europe-west3-b)<br>ha-payment-gateway"]
+        subgraph P2_US["🇺🇸 Americas Region (us-central1 / us-east / us-west)"]
+            T_ING_US["☸️ edge-ingress-gateway-06 (us-central1-a)<br>📦 frontend-web-gateway (Ingress)"]
+            T_ROUT_US["☸️ prod-api-router-07 (us-east1-c)<br>📦 api-routing-proxy"]
+            T_AUTO_US["☸️ prod-auto-scaler-10 (us-west1-b)<br>📦 queue-worker-hpa"]
+            T_HPC_US["☸️ hpc-batch-compute-17 (us-central1-a)<br>📦 hpc-batch-analytics (CPU Class)"]
+        end
 
-        APAC2 --> T_STORE_APAC["prod-analytics-store-15 (asia-east1-b)<br>analytics-worker (Shared PVC)"]
-        APAC2 --> T_HPC_APAC["hpc-batch-compute-17 (asia-southeast1-b)<br>hpc-batch-analytics"]
-
-        US2 --> T_ING_US["edge-ingress-gateway-06 (us-central1-a)<br>frontend-web-gateway (Ingress)"]
-        US2 --> T_ROUT_US["prod-api-router-07 (us-east1-c / us-central1-a)<br>api-routing-proxy"]
-        US2 --> T_AUTO_US["prod-auto-scaler-10 (us-west1-b / us-central1-a)<br>queue-worker-hpa"]
-        US2 --> T_HPC_US["hpc-batch-compute-17 (us-central1-a)<br>hpc-batch-analytics (CPU Class)"]
+        P2 --> P2_EU
+        P2 --> P2_APAC
+        P2 --> P2_US
     end
+
+    classDef hostProject fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px,color:#174ea6;
+    classDef testProject fill:#e6f4ea,stroke:#137333,stroke-width:2px,color:#0d652d;
+    classDef aiNode fill:#f3e8fd,stroke:#9334e8,stroke-width:1.5px,color:#681da8;
+    classDef paymentNode fill:#fef7e0,stroke:#f29900,stroke-width:1.5px,color:#b06000;
+    classDef edgeNode fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#0369a1;
+
+    class P1 hostProject;
+    class P2 testProject;
+    class C_DWS_EU,C_INF_APAC,C_INF_US aiNode;
+    class C_CORE_US,C_CHK_US,C_CHKG_EU,T_PAY_EU paymentNode;
+    class T_ING_US,T_ROUT_US edgeNode;
 ```
 
 ---
