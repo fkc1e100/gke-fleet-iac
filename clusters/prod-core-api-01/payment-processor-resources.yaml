@@ -16,6 +16,9 @@ spec:
       containers:
       - name: payment-processor
         image: gcr.io/google-samples/gb-frontend:v4
+        env:
+        - name: DATABASE_URL
+          value: "placeholder-database-url" # Replace with actual value
         resources:
           requests:
             cpu: 100m
