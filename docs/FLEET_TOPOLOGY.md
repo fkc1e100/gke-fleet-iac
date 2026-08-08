@@ -4,16 +4,22 @@ This document provides a comprehensive mapping of the **Organization ➔ Project
 
 ---
 
-## 🏢 Multi-Organization Architecture Overview
+## 🏢 Multi-Organization Architecture & M&A Context
 
-The multi-cluster fleet spans across **two distinct Google Cloud Organizations**:
+This infrastructure landscape reflects the real-world **merger of two global e-commerce and retail technology enterprises**. Rather than undertaking an immediate, high-risk single-organization cloud migration, the platform engineering team adopted a unified **GitOps repository (`gke-fleet-iac`)** and **autonomous harness (`kube-agents`)** to manage both historical cloud environments under unified governance:
 
-- **🏢 Primary Production Organization (`926317919369`)**: Hosts `gca-gke-2025` (Core Transactional & AI Platform).
-- **🏢 Dedicated Fleet & Sandbox Organization (`433637338589`)**: Hosts `gca-gke-test` under the `dev_projects` hierarchy (Edge Routing, Analytics & HA Gateways).
+- **🏢 `gkedemos.joonix.net` (Organization ID: `926317919369`)**:
+  - **Role**: Primary acquiring enterprise platform.
+  - **Project**: **`gca-gke-2025`** (`764460891170`).
+  - **Workloads**: Core payment transactional engines, centralized user identity & authentication (JWT), transactional databases, and cutting-edge generative AI model fine-tuning / GPU inference (DWS / NVIDIA A100s).
+- **🏢 `google.com` (Organization ID: `433637338589`)**:
+  - **Role**: Acquired global retail brand's historical cloud infrastructure.
+  - **Project**: **`gca-gke-test`** (`825476174734`) _(nested under the `dev_projects` folder tree)_.
+  - **Workloads**: High-throughput public edge ingress routing, multi-region catalog synchronization, European high-availability payment fallback gateways, and CPU-intensive HPC batch compute.
 
 ```mermaid
 flowchart TD
-    subgraph ORG1["🏢 Primary Production Organization (ID: 926317919369)"]
+    subgraph ORG1["🏢 Primary Enterprise Org: gkedemos.joonix.net (ID: 926317919369)"]
         P1["Project: gca-gke-2025 (764460891170)<br>Core Platform & AI Host"]
 
         EU1["Europe (europe-west1 / europe-west3)"]
@@ -39,7 +45,7 @@ flowchart TD
         US1 --> C_INF_US["ai-inference-gpu-16 (us-central1-a)<br>llm-batch-inference (A100 GPU)"]
     end
 
-    subgraph ORG2["🏢 Fleet & Sandbox Organization (ID: 433637338589)"]
+    subgraph ORG2["🏢 Acquired Retail Org: google.com (ID: 433637338589)"]
         FOLDER["Folder: dev_projects (657923791383)"]
         P2["Project: gca-gke-test (825476174734)<br>Edge & Analytics Fleet"]
 
@@ -68,7 +74,7 @@ flowchart TD
 
 ---
 
-## 1. Organization `926317919369` / Project: `gca-gke-2025` _(Core Services & Platform)_
+## 1. Organization `gkedemos.joonix.net` (`926317919369`) / Project: `gca-gke-2025`
 
 ### 🇪🇺 Europe Clusters (`gca-gke-2025`)
 
@@ -99,7 +105,7 @@ flowchart TD
 
 ---
 
-## 2. Organization `433637338589` / Project: `gca-gke-test` _(Edge Routing & Analytics Fleet)_
+## 2. Organization `google.com` (`433637338589`) / Project: `gca-gke-test`
 
 ### 🇪🇺 Europe Clusters (`gca-gke-test`)
 
@@ -148,3 +154,35 @@ flowchart TD
 - **Cloud Storage Buckets**: `gcp-infrastructure/storage/gcs-buckets.yaml`
 - **Workload Identity IAM Bindings**: `gcp-infrastructure/iam/workload-identity-bindings.yaml`
 - **VPC Networking & Subnets**: `gcp-infrastructure/networking/vpc-network.yaml`
+
+---
+
+## ❓ Frequently Asked Questions (Architecture & Topology FAQ)
+
+### Q1: Why are our clusters split across two completely separate Google Cloud Organizations?
+
+**Context & Narrative**: Our retail enterprise represents the strategic merger of two technology platforms. `gkedemos.joonix.net` was the acquiring platform's core infrastructure host (`gca-gke-2025`), while `google.com` housed the acquired company's global edge network and catalog fleet (`gca-gke-test`). Rather than risking transactional outages with a monolithic organization migration, we unified both environments using this single GitOps repository (`gke-fleet-iac`) and cross-org Workload Identity trust governed by `kube-agents`.
+
+### Q2: How do microservices communicate across projects and organizations?
+
+Microservices communicate across projects using **Google Cloud Private Service Connect (PSC)** endpoints, **Cloud Armor protected HTTPRoute / Ingress Gateways**, and VPC internal load balancers (`payment-ilb-service`). Edge clusters in `gca-gke-test` terminate external TLS traffic and forward sanitized requests to core microservices in `gca-gke-2025` over authenticated mTLS tunnels.
+
+### Q3: Why are certain cluster names repeated across multiple regions (e.g. `prod-checkout-04`)?
+
+Critical transactional tiers utilize an **Active-Active Multi-Region Resiliency Pattern**. Running paired clusters across US (`us-central1-a`, `us-east4-a`) and Europe (`europe-west3-a`) ensures sub-50ms checkout latency for local shoppers and seamless automated traffic failover during regional maintenance windows. For AI clusters (`ai-training-dws-09`), geo-distribution enables opportunistic scheduling across regional Dynamic Workload Scheduler (DWS) GPU/TPU quota pools.
+
+### Q4: How does GitOps route workloads to the correct cluster tier?
+
+Workloads in `manifests/workloads/` utilize Kubernetes **ComputeClasses** (`a100-gpu-class`, `cpu-hpc-compute-class`) and GKE Fleet Hub cluster selectors. When ArgoCD reconciles manifests, cluster-affinity constraints ensure AI models land exclusively on GPU node pools while payment gateways deploy to PCI-DSS hardened clusters.
+
+### Q5: What is the persistence source of truth: CloudSQL or in-cluster PostgreSQL?
+
+**CloudSQL (`gcp-infrastructure/database/cloudsql-instance.yaml`)** is the primary, ACID-compliant system of record for financial transactions and account balances. In-cluster PostgreSQL (`stateful-postgres-db`) and Redis (`db-redis`) instances serve as regional read-replicas, caching layers, and session state stores to minimize cross-region database latency.
+
+### Q6: Why are Compute Engine (GCE) VMs included in this Kubernetes repository?
+
+This repository enforces a **Hybrid Modernization Architecture**. Certain critical enterprise legacy components — such as the PCI-DSS certified HSM payment gateway (`prod-payment-mig-gateway`) and the legacy LDAP authentication bridge (`prod-auth-legacy-vm`) — run on managed Compute Engine VMs. Keeping their Terraform and networking definitions alongside GKE ensures changes to upstream APIs do not break downstream VM dependencies.
+
+### Q7: How does `kube-agents` audit both organizations without credential leakage?
+
+The central Platform Agent runs on `platform-agent` in `gca-gke-2025` using Google Cloud Workload Identity. Secondary projects (like `gca-gke-test`) grant least-privilege telemetry and audit viewer roles (`roles/container.viewer`, `roles/logging.viewer`, `roles/monitoring.viewer`) to the Platform Agent's Google Service Account, eliminating long-lived service account keys across organization boundaries.
