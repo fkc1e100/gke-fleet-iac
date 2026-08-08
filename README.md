@@ -19,7 +19,19 @@ Our retail platform infrastructure complies with five mandatory enterprise secur
 4. **🏢 ISO/IEC 27001 (Information Security Management)**: Standardized infrastructure-as-code (IaC) governance, automated pre-commit hook scanning, and continuous Trivy vulnerability reviews.
 5. **📊 SOX Section 404 (Financial Reporting Systems Integrity)**: Immutable audit logging streaming audit logs to tamper-proof GCP Cloud Storage buckets for e-commerce financial transactions.
 
-For complete Architectural Mandates, refer to **[`docs/architecture-board-guidelines.md`](file:///usr/local/google/home/fcurrie/Projects/org-mono-repo/docs/architecture-board-guidelines.md)**.
+For complete Architectural Mandates, refer to **[`docs/architecture-board-guidelines.md`](file:///usr/local/google/home/fcurrie/Projects/gke-fleet-iac/docs/architecture-board-guidelines.md)**.
+
+---
+
+## 🌐 Global Fleet Topology & Multi-Project Hierarchy
+
+Our multi-cluster GKE fleet and companion infrastructure span multiple Google Cloud projects across **Europe (`europe-west1`, `europe-west3`)**, **Asia-Pacific (`asia-east1`, `asia-southeast1`)**, and the **Americas (`us-central1`, `us-east`, `us-west`)**:
+
+* **Organization**: `google.com` (`926317919369`)
+  * **Host Project (`gca-gke-2025`)**: Core transaction services, user auth, AI model fine-tuning (DWS), and GPU LLM batch inference.
+  * **Secondary Fleet Project (`gca-gke-test`)**: Edge ingress routing, catalog sync, high-availability payment gateways, and HPC batch analytics.
+
+📖 **For the full cluster inventory, region-by-region breakdowns, and workload mappings, see [Global Fleet Topology Guide (`docs/FLEET_TOPOLOGY.md`)](file:///usr/local/google/home/fcurrie/Projects/gke-fleet-iac/docs/FLEET_TOPOLOGY.md)**.
 
 ---
 
