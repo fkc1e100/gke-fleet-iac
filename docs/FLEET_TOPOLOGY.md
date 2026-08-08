@@ -18,79 +18,80 @@ This infrastructure landscape reflects the real-world **merger of two global e-c
   - **Workloads**: High-throughput public edge ingress routing, multi-region catalog synchronization, European high-availability payment fallback gateways, and CPU-intensive HPC batch compute.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#1a73e8', 'primaryTextColor': '#202124', 'lineColor': '#5f6368', 'fontFamily': 'Inter, -apple-system, sans-serif', 'fontSize': '13px' }}}%%
-flowchart TB
-    subgraph ORG1["🏢 Primary Enterprise: gkedemos.joonix.net (Org ID: 926317919369)"]
-        P1["📁 Host Project: gca-gke-2025 (764460891170)<br>Core Transactional & AI Platform"]
-
-        subgraph P1_EU["🇪🇺 Europe Region (europe-west1 / europe-west3)"]
-            C_DWS_EU["☸️ ai-training-dws-09 (europe-west1-b)<br>📦 gemma-fine-tuning-job"]
-            C_CHKG_EU["☸️ prod-checkout-gateway-11 (europe-west3-a)<br>📦 checkout-backend"]
-        end
-
-        subgraph P1_APAC["🌏 Asia-Pacific Region (asia-east1 / asia-southeast1)"]
-            C_ORD_APAC["☸️ prod-order-processing-12 (asia-east1-a)<br>📦 config-syncer"]
-            C_INF_APAC["☸️ ai-inference-gpu-16 (asia-southeast1-a)<br>📦 llm-batch-inference"]
-        end
-
-        subgraph P1_US["🇺🇸 Americas Region (us-central1 / us-east / us-west)"]
-            C_CORE_US["☸️ prod-core-api-01 (us-central1-a)<br>📦 payment-processor"]
-            C_AUTH_US["☸️ prod-user-auth-02 (us-central1-a)<br>📦 user-auth-service"]
-            C_CHK_US["☸️ prod-checkout-04 (us-east4-a)<br>📦 checkout-backend-api / db-redis"]
-            C_PIPE_US["☸️ prod-data-pipeline-03 (us-east1-b)<br>📦 memory-cache / queue-worker"]
-            C_DB_US["☸️ prod-storage-db-05 (us-west1-a)<br>📦 stateful-postgres-db"]
-            C_BATCH_US["☸️ batch-analytics-08 (us-west2-a)<br>📦 batch-report-worker"]
-            C_INF_US["☸️ ai-inference-gpu-16 (us-central1-a)<br>📦 llm-batch-inference (A100 GPU)"]
-        end
-
-        P1 --> P1_EU
-        P1 --> P1_APAC
-        P1 --> P1_US
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#1a73e8', 'primaryTextColor': '#202124', 'lineColor': '#5f6368', 'fontFamily': 'Inter, -apple-system, sans-serif', 'fontSize': '14px' }}}%%
+flowchart LR
+    subgraph ORG1["🏢 Primary Enterprise: gkedemos.joonix.net (ID: 926317919369)"]
+        P1["📁 Host Project: gca-gke-2025<br>• Core Payment Transactions<br>• User Identity & Auth (JWT)<br>• AI Training & GPU Inference<br>• CloudSQL & PostgreSQL DBs"]
     end
 
-    subgraph ORG2["🏢 Acquired Retail Brand: google.com (Org ID: 433637338589)"]
+    subgraph ORG2["🏢 Acquired Retail Org: google.com (ID: 433637338589)"]
         FOLDER["📂 dev_projects (folders/657923791383)"]
-        P2["📁 Fleet Project: gca-gke-test (825476174734)<br>Edge Ingress, Analytics & HA Gateways"]
+        P2["📁 Fleet Project: gca-gke-test<br>• Public Edge Ingress & CDN<br>• Global Catalog Sync<br>• HA Payment Gateway Fallback<br>• CPU HPC Batch Simulations"]
         FOLDER --> P2
-
-        subgraph P2_EU["🇪🇺 Europe Region (europe-west1 / europe-west3)"]
-            T_CAT_EU["☸️ prod-catalog-sync-13 (europe-west1-c)<br>📦 config-syncer (Catalog)"]
-            T_PAY_EU["☸️ prod-ha-payments-14 (europe-west3-b)<br>📦 ha-payment-gateway"]
-        end
-
-        subgraph P2_APAC["🌏 Asia-Pacific Region (asia-east1 / asia-southeast1)"]
-            T_STORE_APAC["☸️ prod-analytics-store-15 (asia-east1-b)<br>📦 analytics-worker (Shared PVC)"]
-            T_HPC_APAC["☸️ hpc-batch-compute-17 (asia-southeast1-b)<br>📦 hpc-batch-analytics"]
-        end
-
-        subgraph P2_US["🇺🇸 Americas Region (us-central1 / us-east / us-west)"]
-            T_ING_US["☸️ edge-ingress-gateway-06 (us-central1-a)<br>📦 frontend-web-gateway (Ingress)"]
-            T_ROUT_US["☸️ prod-api-router-07 (us-east1-c)<br>📦 api-routing-proxy"]
-            T_AUTO_US["☸️ prod-auto-scaler-10 (us-west1-b)<br>📦 queue-worker-hpa"]
-            T_HPC_US["☸️ hpc-batch-compute-17 (us-central1-a)<br>📦 hpc-batch-analytics (CPU Class)"]
-        end
-
-        P2 --> P2_EU
-        P2 --> P2_APAC
-        P2 --> P2_US
     end
 
-    classDef hostProject fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px,color:#174ea6;
-    classDef testProject fill:#e6f4ea,stroke:#137333,stroke-width:2px,color:#0d652d;
-    classDef aiNode fill:#f3e8fd,stroke:#9334e8,stroke-width:1.5px,color:#681da8;
-    classDef paymentNode fill:#fef7e0,stroke:#f29900,stroke-width:1.5px,color:#b06000;
-    classDef edgeNode fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#0369a1;
+    GITOPS["🐙 GitOps Monorepo: gke-fleet-iac<br>• ArgoCD Workload Apps<br>• Terraform Multi-Cluster IaC<br>• Gatekeeper Guardrails"]
+    AGENT["🤖 Platform Agent (kube-agents)<br>• Workload Identity Governance<br>• Multi-Project Security Audit"]
 
-    class P1 hostProject;
-    class P2 testProject;
-    class C_DWS_EU,C_INF_APAC,C_INF_US aiNode;
-    class C_CORE_US,C_CHK_US,C_CHKG_EU,T_PAY_EU paymentNode;
-    class T_ING_US,T_ROUT_US edgeNode;
+    GITOPS ==>|Reconciles Manifests| P1
+    GITOPS ==>|Reconciles Manifests| P2
+    AGENT -.->|Audits & Proposes PRs| P1
+    AGENT -.->|Audits & Proposes PRs| P2
+    P2 <==>|Private Service Connect & mTLS| P1
+
+    classDef host fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px,color:#174ea6,font-weight:bold;
+    classDef test fill:#e6f4ea,stroke:#137333,stroke-width:2px,color:#0d652d,font-weight:bold;
+    classDef tool fill:#fef7e0,stroke:#f29900,stroke-width:1.5px,color:#b06000;
+
+    class P1 host;
+    class P2 test;
+    class GITOPS,AGENT tool;
 ```
 
 ---
 
 ## 1. Organization `gkedemos.joonix.net` (`926317919369`) / Project: `gca-gke-2025`
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#1a73e8', 'primaryTextColor': '#202124', 'lineColor': '#5f6368', 'fontFamily': 'Inter, -apple-system, sans-serif', 'fontSize': '13px' }}}%%
+flowchart TD
+    P1["📁 gca-gke-2025: Core Platform & AI Workloads"]
+
+    subgraph EU["🇪🇺 Europe Regional Clusters"]
+        C_DWS_EU["☸️ ai-training-dws-09 (europe-west1-b)<br>📦 gemma-fine-tuning-job (DWS Worker)"]
+        C_CHKG_EU["☸️ prod-checkout-gateway-11 (europe-west3-a)<br>📦 checkout-backend (EU Routing Gateway)"]
+    end
+
+    subgraph APAC["🌏 Asia-Pacific Regional Clusters"]
+        C_ORD_APAC["☸️ prod-order-processing-12 (asia-east1-a)<br>📦 config-syncer (Order Sync & Workflow)"]
+        C_INF_APAC["☸️ ai-inference-gpu-16 (asia-southeast1-a)<br>📦 llm-batch-inference (GPU LLM Inference)"]
+    end
+
+    subgraph US["🇺🇸 Americas Regional Clusters"]
+        C_CORE_US["☸️ prod-core-api-01 (us-central1-a)<br>📦 payment-processor (Core API)"]
+        C_AUTH_US["☸️ prod-user-auth-02 (us-central1-a)<br>📦 user-auth-service (Identity & JWT)"]
+        C_CHK_US["☸️ prod-checkout-04 (us-east4-a / us-central1-a)<br>📦 checkout-backend-api / db-redis"]
+        C_PIPE_US["☸️ prod-data-pipeline-03 (us-east1-b / us-central1-a)<br>📦 memory-cache / queue-worker"]
+        C_DB_US["☸️ prod-storage-db-05 (us-west1-a / us-central1-a)<br>📦 stateful-postgres-db (Database Tier)"]
+        C_BATCH_US["batch-analytics-08 (us-west2-a / us-central1-a)<br>📦 batch-report-worker (Reporting ETL)"]
+        C_INF_US["☸️ ai-inference-gpu-16 (us-central1-a)<br>📦 llm-batch-inference (A100 GPU Class)"]
+        C_DWS_US["☸️ ai-training-dws-09 (us-central1-a)<br>📦 gemma-fine-tuning-job (Primary Host)"]
+    end
+
+    P1 --> EU
+    P1 --> APAC
+    P1 --> US
+
+    classDef host fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px,color:#174ea6,font-weight:bold;
+    classDef aiNode fill:#f3e8fd,stroke:#9334e8,stroke-width:1.5px,color:#681da8;
+    classDef payNode fill:#fef7e0,stroke:#f29900,stroke-width:1.5px,color:#b06000;
+    classDef dataNode fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#0369a1;
+
+    class P1 host;
+    class C_DWS_EU,C_INF_APAC,C_INF_US,C_DWS_US aiNode;
+    class C_CORE_US,C_CHK_US,C_CHKG_EU payNode;
+    class C_PIPE_US,C_DB_US,C_BATCH_US,C_AUTH_US,C_ORD_APAC dataNode;
+```
 
 ### 🇪🇺 Europe Clusters (`gca-gke-2025`)
 
@@ -122,6 +123,46 @@ flowchart TB
 ---
 
 ## 2. Organization `google.com` (`433637338589`) / Project: `gca-gke-test`
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryBorderColor': '#137333', 'primaryTextColor': '#202124', 'lineColor': '#5f6368', 'fontFamily': 'Inter, -apple-system, sans-serif', 'fontSize': '13px' }}}%%
+flowchart TD
+    P2["📁 gca-gke-test: Global Edge Routing, Analytics & HA Fleet"]
+
+    subgraph EU2["🇪🇺 Europe Regional Clusters"]
+        T_CAT_EU["☸️ prod-catalog-sync-13 (europe-west1-c)<br>📦 config-syncer (EU Catalog Sync)"]
+        T_PAY_EU["☸️ prod-ha-payments-14 (europe-west3-b)<br>📦 ha-payment-gateway (EU Fallback)"]
+    end
+
+    subgraph APAC2["🌏 Asia-Pacific Regional Clusters"]
+        T_STORE_APAC["☸️ prod-analytics-store-15 (asia-east1-b)<br>📦 analytics-worker (Shared PVC)"]
+        T_HPC_APAC["☸️ hpc-batch-compute-17 (asia-southeast1-b)<br>📦 hpc-batch-analytics (HPC Simulations)"]
+    end
+
+    subgraph US2["🇺🇸 Americas Regional Clusters"]
+        T_ING_US["☸️ edge-ingress-gateway-06 (us-central1-a)<br>📦 frontend-web-gateway (Public SSL Ingress)"]
+        T_ROUT_US["☸️ prod-api-router-07 (us-east1-c / us-central1-a)<br>📦 api-routing-proxy (Global API Router)"]
+        T_AUTO_US["☸️ prod-auto-scaler-10 (us-west1-b / us-central1-a)<br>📦 queue-worker-hpa (Autoscaler Testing)"]
+        T_CAT_US["☸️ prod-catalog-sync-13 (us-central1-a)<br>📦 config-syncer (US Catalog Sync)"]
+        T_PAY_US["☸️ prod-ha-payments-14 (us-central1-a)<br>📦 ha-payment-gateway / admission-webhook"]
+        T_STORE_US["☸️ prod-analytics-store-15 (us-central1-a)<br>📦 analytics-worker (Analytics Store)"]
+        T_HPC_US["☸️ hpc-batch-compute-17 (us-central1-a)<br>📦 hpc-batch-analytics (CPU ComputeClass)"]
+    end
+
+    P2 --> EU2
+    P2 --> APAC2
+    P2 --> US2
+
+    classDef test fill:#e6f4ea,stroke:#137333,stroke-width:2px,color:#0d652d,font-weight:bold;
+    classDef edgeNode fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#0369a1;
+    classDef payNode fill:#fef7e0,stroke:#f29900,stroke-width:1.5px,color:#b06000;
+    classDef hpcNode fill:#f3e8fd,stroke:#9334e8,stroke-width:1.5px,color:#681da8;
+
+    class P2 test;
+    class T_ING_US,T_ROUT_US,T_AUTO_US,T_CAT_EU,T_CAT_US edgeNode;
+    class T_PAY_EU,T_PAY_US payNode;
+    class T_STORE_APAC,T_STORE_US,T_HPC_APAC,T_HPC_US hpcNode;
+```
 
 ### 🇪🇺 Europe Clusters (`gca-gke-test`)
 
