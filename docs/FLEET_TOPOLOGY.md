@@ -7,48 +7,48 @@ This document provides a comprehensive mapping of the **Organization ➔ Project
 ## 🏢 Google Cloud Organization: `google.com` (`926317919369`)
 
 ```mermaid
-graph TD
-    ORG["🏢 Organization: google.com (926317919369)"]
+flowchart TD
+    ORG["Organization: google.com (926317919369)"]
     
     %% Projects
-    ORG --> P1["📁 Project: gca-gke-2025 (764460891170)<br/><i>Core Transactional & AI Platform</i>"]
-    ORG --> FOLDER["📂 Folder: dev_projects (657923791383)"]
-    FOLDER --> P2["📁 Project: gca-gke-test (825476174734)<br/><i>Edge Routing, Analytics & HA Gateways</i>"]
+    ORG --> P1["Project: gca-gke-2025 (764460891170) - Core Platform"]
+    ORG --> FOLDER["Folder: dev_projects (657923791383)"]
+    FOLDER --> P2["Project: gca-gke-test (825476174734) - Edge & Analytics Fleet"]
 
     %% gca-gke-2025 Regional Groups
-    P1 --> EU1["🇪🇺 Europe (europe-west1 / europe-west3)"]
-    P1 --> APAC1["🌏 Asia-Pacific (asia-east1 / asia-southeast1)"]
-    P1 --> US1["🇺🇸 Americas (us-central1 / us-east / us-west)"]
+    P1 --> EU1["Europe (europe-west1 / europe-west3)"]
+    P1 --> APAC1["Asia-Pacific (asia-east1 / asia-southeast1)"]
+    P1 --> US1["Americas (us-central1 / us-east / us-west)"]
 
-    EU1 --> C_DWS_EU["☸️ ai-training-dws-09 (europe-west1-b)<br/>📦 gemma-fine-tuning-job"]
-    EU1 --> C_CHKG_EU["☸️ prod-checkout-gateway-11 (europe-west3-a)<br/>📦 checkout-backend"]
+    EU1 --> C_DWS_EU["ai-training-dws-09 (europe-west1-b)<br>gemma-fine-tuning-job"]
+    EU1 --> C_CHKG_EU["prod-checkout-gateway-11 (europe-west3-a)<br>checkout-backend"]
 
-    APAC1 --> C_ORD_APAC["☸️ prod-order-processing-12 (asia-east1-a)<br/>📦 config-syncer"]
-    APAC1 --> C_INF_APAC["☸️ ai-inference-gpu-16 (asia-southeast1-a)<br/>📦 llm-batch-inference"]
+    APAC1 --> C_ORD_APAC["prod-order-processing-12 (asia-east1-a)<br>config-syncer"]
+    APAC1 --> C_INF_APAC["ai-inference-gpu-16 (asia-southeast1-a)<br>llm-batch-inference"]
 
-    US1 --> C_CORE_US["☸️ prod-core-api-01 (us-central1-a)<br/>📦 payment-processor"]
-    US1 --> C_AUTH_US["☸️ prod-user-auth-02 (us-central1-a)<br/>📦 user-auth-service"]
-    US1 --> C_CHK_US["☸️ prod-checkout-04 (us-east4-a / us-central1-a)<br/>📦 checkout-backend-api / db-redis"]
-    US1 --> C_PIPE_US["☸️ prod-data-pipeline-03 (us-east1-b / us-central1-a)<br/>📦 memory-cache / queue-worker"]
-    US1 --> C_DB_US["☸️ prod-storage-db-05 (us-west1-a / us-central1-a)<br/>📦 stateful-postgres-db"]
-    US1 --> C_BATCH_US["☸️ batch-analytics-08 (us-west2-a / us-central1-a)<br/>📦 batch-report-worker"]
-    US1 --> C_INF_US["☸️ ai-inference-gpu-16 (us-central1-a)<br/>📦 llm-batch-inference (A100 GPU Class)"]
+    US1 --> C_CORE_US["prod-core-api-01 (us-central1-a)<br>payment-processor"]
+    US1 --> C_AUTH_US["prod-user-auth-02 (us-central1-a)<br>user-auth-service"]
+    US1 --> C_CHK_US["prod-checkout-04 (us-east4-a / us-central1-a)<br>checkout-backend-api / db-redis"]
+    US1 --> C_PIPE_US["prod-data-pipeline-03 (us-east1-b / us-central1-a)<br>memory-cache / queue-worker"]
+    US1 --> C_DB_US["prod-storage-db-05 (us-west1-a / us-central1-a)<br>stateful-postgres-db"]
+    US1 --> C_BATCH_US["batch-analytics-08 (us-west2-a / us-central1-a)<br>batch-report-worker"]
+    US1 --> C_INF_US["ai-inference-gpu-16 (us-central1-a)<br>llm-batch-inference (A100 GPU)"]
 
     %% gca-gke-test Regional Groups
-    P2 --> EU2["🇪🇺 Europe (europe-west1 / europe-west3)"]
-    P2 --> APAC2["🌏 Asia-Pacific (asia-east1 / asia-southeast1)"]
-    P2 --> US2["🇺🇸 Americas (us-central1 / us-east / us-west)"]
+    P2 --> EU2["Europe (europe-west1 / europe-west3)"]
+    P2 --> APAC2["Asia-Pacific (asia-east1 / asia-southeast1)"]
+    P2 --> US2["Americas (us-central1 / us-east / us-west)"]
 
-    EU2 --> T_CAT_EU["☸️ prod-catalog-sync-13 (europe-west1-c)<br/>📦 config-syncer (Catalog)"]
-    EU2 --> T_PAY_EU["☸️ prod-ha-payments-14 (europe-west3-b)<br/>📦 ha-payment-gateway"]
+    EU2 --> T_CAT_EU["prod-catalog-sync-13 (europe-west1-c)<br>config-syncer (Catalog)"]
+    EU2 --> T_PAY_EU["prod-ha-payments-14 (europe-west3-b)<br>ha-payment-gateway"]
 
-    APAC2 --> T_STORE_APAC["☸️ prod-analytics-store-15 (asia-east1-b)<br/>📦 analytics-worker (Shared PVC)"]
-    APAC2 --> T_HPC_APAC["☸️ hpc-batch-compute-17 (asia-southeast1-b)<br/>📦 hpc-batch-analytics"]
+    APAC2 --> T_STORE_APAC["prod-analytics-store-15 (asia-east1-b)<br>analytics-worker (Shared PVC)"]
+    APAC2 --> T_HPC_APAC["hpc-batch-compute-17 (asia-southeast1-b)<br>hpc-batch-analytics"]
 
-    US2 --> T_ING_US["☸️ edge-ingress-gateway-06 (us-central1-a)<br/>📦 frontend-web-gateway (Ingress)"]
-    US2 --> T_ROUT_US["☸️ prod-api-router-07 (us-east1-c / us-central1-a)<br/>📦 api-routing-proxy"]
-    US2 --> T_AUTO_US["☸️ prod-auto-scaler-10 (us-west1-b / us-central1-a)<br/>📦 queue-worker-hpa"]
-    US2 --> T_HPC_US["☸️ hpc-batch-compute-17 (us-central1-a)<br/>📦 hpc-batch-analytics (CPU Class)"]
+    US2 --> T_ING_US["edge-ingress-gateway-06 (us-central1-a)<br>frontend-web-gateway (Ingress)"]
+    US2 --> T_ROUT_US["prod-api-router-07 (us-east1-c / us-central1-a)<br>api-routing-proxy"]
+    US2 --> T_AUTO_US["prod-auto-scaler-10 (us-west1-b / us-central1-a)<br>queue-worker-hpa"]
+    US2 --> T_HPC_US["hpc-batch-compute-17 (us-central1-a)<br>hpc-batch-analytics (CPU Class)"]
 ```
 
 ---
