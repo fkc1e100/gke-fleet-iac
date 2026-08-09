@@ -36,4 +36,4 @@ spec:
               echo "Starting payment service..."
           env:
             - name: DATABASE_URL
-              value: "postgresql://postgres:postgres@postgres-prod-payments:5432/payments?sslmode=disable"
+              value: "postgresql://postgres:[DB_PASSWORD_PLACEHOLDER]@postgres-prod-payments:5432/payments?sslmode=disable"
