@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-pipeline-to-caching
+  namespace: prod-caching
+  labels:
+    app.kubernetes.io/managed-by: kube-agents
+    audit.kubeagents.x-k8s.io/policy: compliance-audit
+    audit.kubeagents.x-k8s.io/model: gemma4
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: memory-cache
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: prod-data-pipeline
+    ports:
+    - protocol: TCP
+      port: 6379
