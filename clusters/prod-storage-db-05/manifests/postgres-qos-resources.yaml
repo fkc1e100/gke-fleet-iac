@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stateful-postgres-db
+  namespace: prod-databases
+  labels:
+    app.kubernetes.io/managed-by: kube-agents
+    audit.kubeagents.x-k8s.io/policy: compliance-audit
+    audit.kubeagents.x-k8s.io/model: gemma4
+spec:
+  template:
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: db
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
