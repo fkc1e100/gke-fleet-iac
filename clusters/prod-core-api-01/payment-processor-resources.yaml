@@ -14,7 +14,7 @@ spec:
         app: payment-processor
     spec:
       containers:
-      - name: payment-processor
+      - name: app
         image: gcr.io/google-samples/gb-frontend:v4
         resources:
           requests:
