@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: bash:latest
+          image: gcr.io/google-samples/gb-frontend:v5
           command: ["/bin/sh", "-c"]
           args:
             - |
